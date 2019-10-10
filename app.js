@@ -7,6 +7,10 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+const mongoose = require('mongoose');
+mongoose.Promise = Promise;
+mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/manevent-database');
+
 var app = express();
 
 // view engine setup
