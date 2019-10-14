@@ -5,3 +5,18 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     block content
+    !!! 5
+
+    :javascript
+      | if (foo) {
+      |    bar()
+      | }
+    h1 Jade - node template engine
+    #container
+      - if (youAreUsingJade)
+         You are amazing
+      - else
+         Get on it!
+         Get on it!
+         Get on it!
+         Get on it!
