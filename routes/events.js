@@ -58,7 +58,7 @@ router.post('/', function(req, res, next) {
 });
 
 /* update event. */
-router.put('/:_id', function(req, res, next) {
+router.put('/:name', function(req, res, next) {
   Event.findByIdAndUpdate(
     // the id of the item to find
     req.params._id,
