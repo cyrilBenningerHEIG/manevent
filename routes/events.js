@@ -34,7 +34,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET event listing. */
-router.get('/:name', function(req, res, next) {
+router.get('/:_id', function(req, res, next) {
   Event.findById(req.params._id).exec(function(err, events) {
     if (err) {
       return next(err);
@@ -58,7 +58,7 @@ router.post('/', function(req, res, next) {
 });
 
 /* update event. */
-router.put('/:name', function(req, res, next) {
+router.put('/:_id', function(req, res, next) {
   Event.findByIdAndUpdate(
     // the id of the item to find
     req.params._id,
