@@ -39,7 +39,7 @@ router.post('/', function(req, res, next) {
   // Create a new document from the JSON in the request body
   const newEvent = new Event(req.body);
   // Save that document
-  newEvent.save(function(err, savedUser) {
+  newEvent.save(function(err, savedEvent) {
     if (err) {
       return next(err);
     }
