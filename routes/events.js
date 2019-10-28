@@ -5,22 +5,31 @@ const Event = require('../models/event');
 
 /* GET events listing. */
 router.get('/', function(req, res, next) {
-  Event.find().sort('name').exec(function(err, events) {
-    if (err) {
-      return next(err);
-    }
+
+  let query = Event.find().sort('name')
     // Parse the "page" param (default to 1 if invalid)
-  let page = parseInt(req.Event.page, 10);
+  let page = parseInt(req.query.page, 10);
   if (isNaN(page) || page < 1) {
     page = 1;
   }
   // Parse the "pageSize" param (default to 100 if invalid)
-  let pageSize = parseInt(req.Event.pageSize, 10);
+  let pageSize = parseInt(req.query.pageSize, 10);
   if (isNaN(pageSize) || pageSize < 0 || pageSize > 100) {
     pageSize = 100;
   }
   // Apply skip and limit to select the correct page of elements
-  Event = Event.skip((page - 1) * pageSize).limit(pageSize);
+  query = query.skip((page - 1) * pageSize).limit(pageSize);
+
+  query.exec(function(err, events) {
+    if (err) {
+      return next(err);
+    }
+    res.send({
+        page: page,
+        pageSize: pageSize,
+        //total: total,
+        data: events
+    });
   });
 });
 
