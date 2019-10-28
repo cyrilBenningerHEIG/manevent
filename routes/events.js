@@ -34,7 +34,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET event listing. */
-router.get('/:_id', function(req, res, next) {
+router.get('/:name', function(req, res, next) {
   Event.findById(req.params._id).exec(function(err, events) {
     if (err) {
       return next(err);
