@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const User=require("./user");
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose'), Schema = mongoose.Schema;
+const User=require("../models/user");
+
 // Define the schema for users
 const eventSchema = new Schema({
   name: String,
@@ -8,7 +8,7 @@ const eventSchema = new Schema({
   Adress: String,
   Time: String,
   Description: String,
-  Member:[{types:Schema.Types.ObjectId, ref:'User'}],
+  Member:[{ type: Schema.Types.ObjectId, ref: 'User' }],
   public: Boolean 
 });
 // Create the model from the schema and export it
