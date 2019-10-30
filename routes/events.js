@@ -57,6 +57,26 @@ router.post('/', function(req, res, next) {
   });
 });
 
+router.post('/:_id/add', authenticate, function(req, res, next) {
+  // If we reach this function, the previous authentication middleware
+  // has done its job, i.e. a valid JWT was in the Authorization header.
+  const currentUserId = req.currentUserId;
+  Event.findByIdAndUpdate(
+    // the id of the item to find
+    req.params._id,
+    
+    // the change to be made. Mongoose will smartly combine your existing 
+    // document with this change, which allows for partial updates too
+    currentUserId,
+    
+    // the callback function
+    (err, event) => {
+    // Handle any possible database errors
+        if (err) return res.status(500).send(err);
+        return res.send(event);
+    })
+});
+
 /* update event. */
 router.put('/:_id', function(req, res, next) {
   Event.findByIdAndUpdate(
