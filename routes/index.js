@@ -16,7 +16,7 @@ router.post('/login', function(req, res, next) {
     if (err) { return next(err); }
     else if (!user) { return res.sendStatus(401); }
     // Validate the password.
-    bcrypt.compare(req.body.password, user.password, function(err, valid) {
+    bcrypt.compare(req.body.Password, user.Password, function(err, valid) {
       if (err) { return next(err); }
       else if (!valid) { return res.sendStatus(401); }
       // Generate a valid JWT which expires in 7 days.
