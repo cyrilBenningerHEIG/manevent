@@ -8,7 +8,7 @@ const eventSchema = new Schema({
   Adress: String,
   Time: String,
   Description: String,
-  Member:[{types:Schema.Types.ObjectId, ref:User}],
+  //Member:[{types:Schema.Types.ObjectId, ref:User}],
   public: Boolean 
 });
 // Create the model from the schema and export it
