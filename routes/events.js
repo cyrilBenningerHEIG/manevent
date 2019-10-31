@@ -65,8 +65,11 @@ router.post('/:_id/add', auth, function(req, res, next) {
   let event = Event.findById(req.params._id);
   event.Member.push(currentUserId);
   event.save(function(err){
-    if(err) return console.log(err.stack);
-    console.log("Member is added");
+    if (err) {
+      return next(err);
+    }
+    // Send the saved document in the response
+    res.send(savedEvent);
   });
     
 });
