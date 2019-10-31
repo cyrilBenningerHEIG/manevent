@@ -64,7 +64,7 @@ router.post('/:_id/add', auth, function(req, res, next) {
   const currentUserId = req.currentUserId;
   let event = Event.findById(req.params._id);
   event.Member=[];
-  event.Member.push(currentUserId);
+  event.Member.push(currentUserId)
   event.save(function(err,savedEvent){
     if (err) {
       return next(err);
