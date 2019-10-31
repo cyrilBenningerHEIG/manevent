@@ -70,8 +70,7 @@ router.post('/:_id/add', auth, function(req, res, next) {
     }
     // Send the saved document in the response
     res.send(savedEvent);
-  });
-    
+  });    
 });
 
 /* update event. */
