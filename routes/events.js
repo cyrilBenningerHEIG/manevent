@@ -66,7 +66,7 @@ router.post('/:_id/add', auth, function(req, res, next) {
   event.Member.push(currentUserId);
   event.save(function(err){
     if(err) return console.log(err.stack);
-    console.log("Member is added")
+    console.log("Member is added");
   });
     
 });
