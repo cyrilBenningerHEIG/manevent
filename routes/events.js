@@ -62,15 +62,17 @@ router.post('/:_id/add', auth, function(req, res, next) {
   // If we reach this function, the previous authentication middleware
   // has done its job, i.e. a valid JWT was in the Authorization header.
   const currentUserId = req.currentUserId;
-  let event = Event.findById(req.params._id);
-  event.Member=[];
-  event.Member.push(currentUserId).save(function(err,savedEvent){
-    if (err) {
-      return next(err);
-    }
-    // Send the saved document in the response
-    res.send(savedEvent);
+  Event.findById(req.params._id,function(err,event){
+    event.Member.push(currentUserId);
+    event.save(function(err,savedEvent){
+      if (err) {
+        return next(err);
+      }
+      // Send the saved document in the response
+      res.send(savedEvent);
+    });
   });
+  
 });
 
 /* update event. */

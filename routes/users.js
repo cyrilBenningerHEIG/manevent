@@ -10,7 +10,19 @@ router.get('/:_id', function(req, res, next) {
     if (err) {
       return next(err);
     }
-    res.send(Users);
+    User.aggregate([
+      {"$match":{"User":
+        {"$in" : "Member"}
+      }},
+      { $group: { NumberEvent: { $sum: 1 } } }
+      ]).exec(function(err,user){
+        if (err) {
+          return next(err);
+        }
+        res.send(user);
+      })
+
+    
   });
 });
 
