@@ -1,13 +1,14 @@
+//jshint esversion:6
 var express = require('express');
 const auth = require("../middleware/auth");
 var router = express.Router();
 const Event = require('../models/event');
-
+const ObjectId = require('mongodb').ObjectID;
 
 /* GET events listing. */
 router.get('/', function(req, res, next) {
 
-  let query = Event.find().sort('name')
+  let query = Event.find().sort('name');
     // Parse the "page" param (default to 1 if invalid)
   let page = parseInt(req.query.page, 10);
   if (isNaN(page) || page < 1) {
@@ -31,6 +32,40 @@ router.get('/', function(req, res, next) {
         //total: total,
         data: events
     });
+  });
+});
+
+/* Filters */
+router.get('/filter', function(req, res, next) {
+  let query = Event.find();
+
+  /* Filter events by name*/
+  if (req.query.name) {
+    query = query.where('name').equals(req.query.name);
+  }
+
+  /* Filter par param public */
+  if(req.query.public){
+    query = query.where('public').equals(req.query.public); //Boolean()
+   }
+
+   /* Filter events by adress*/
+   if (req.query.adress){
+     query = query.where('adress').equals(req.query.adress);
+   }
+
+  // Filter events by date
+  if (req.query.date) {
+    query = query.where('date').equals(req.query.date);
+  }
+
+  // Execute the query
+  query.exec(function(err, events) {
+    if (err) {
+      return next(err);
+    }
+
+    res.send(events);
   });
 });
 
@@ -71,6 +106,7 @@ router.post('/:_id/add', auth, function(req, res, next) {
     // Send the saved document in the response
     res.send(savedEvent);
   });
+
 });
 
 /* update event. */
@@ -78,26 +114,28 @@ router.put('/:_id', function(req, res, next) {
   Event.findByIdAndUpdate(
     // the id of the item to find
     req.params._id,
-    
-    // the change to be made. Mongoose will smartly combine your existing 
+
+    // the change to be made. Mongoose will smartly combine your existing
     // document with this change, which allows for partial updates too
     req.body,
-    
+
     // the callback function
     (err, event) => {
     // Handle any possible database errors
         if (err) return res.status(500).send(err);
         return res.send(event);
-    })
+    });
 });
 
-/* delete event. */
+/* delete event */
 router.delete('/:_id', function(req, res, next) {
   Event.findByIdAndDelete(
     req.params._id,
     (err,event));
 
 });
+
+
 
 
 module.exports = router;
