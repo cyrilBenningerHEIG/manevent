@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 const secretKey = process.env.SECRET_KEY || 'changeme';
 
 function authenticate(req, res, next) {
@@ -23,3 +24,4 @@ function authenticate(req, res, next) {
     }
   });
 }
+module.exports=authenticate;

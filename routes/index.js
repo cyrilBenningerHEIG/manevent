@@ -1,3 +1,4 @@
+//jshint esversion:6
 var express = require('express');
 var router = express.Router();
 const bcrypt = require('bcrypt');
@@ -27,7 +28,7 @@ router.post('/login', function(req, res, next) {
         res.send({ token: token }); // Send the token to the client.
       });
     });
-  })
+  });
 });
 
 module.exports = router;

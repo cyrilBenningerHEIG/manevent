@@ -1,3 +1,4 @@
+//jshint esversion:6
 var express = require('express');
 var router = express.Router();
 const User = require('../models/user');
@@ -41,17 +42,17 @@ router.put('/:_id', function(req, res, next) {
   User.findByIdAndUpdate(
     // the id of the item to find
     req.params._id,
-    
-    // the change to be made. Mongoose will smartly combine your existing 
+
+    // the change to be made. Mongoose will smartly combine your existing
     // document with this change, which allows for partial updates too
     req.body,
-    
+
     // the callback function
     (err, Users) => {
     // Handle any possible database errors
         if (err) return res.status(500).send(err);
         return res.send(Users);
-    })
+    });
 });
 
 /* delete User. */

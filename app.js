@@ -11,7 +11,8 @@ var eventsRouter = require('./routes/events');
 
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
-mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/manevent-database');
+mongoose.connect(process.env.MONGODB_URI ||'mongodb://heroku_22731f6j:jbpsdfrl1askirbtik2j5b1mfn@ds333248.mlab.com:33248/heroku_22731f6j');
+mongoose.set('debug', true);
 
 var app = express();
 
