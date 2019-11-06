@@ -2,7 +2,7 @@
  {
     "name": "Manevent",
     "version": "1.0.0",
-    "description": "It is awesome",
+    "description": "ApiDoc for Manevent",
     "title": "Manevent",
-    "url" : "https://example.com"
+    "url" : "https://manevent.herokuapp.com"
   }

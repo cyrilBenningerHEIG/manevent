@@ -1,9 +1,22 @@
 //jshint esversion:6
+
 var express = require('express');
 const auth = require("../middleware/auth");
 var router = express.Router();
 const Event = require('../models/event');
 const ObjectId = require('mongodb').ObjectID;
+
+/**
+ * DOCUMENTATION API 
+ * @api {get} /users/:id Request a user's information
+ * @apiName GetUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Unique identifier of the user
+ *
+ * @apiSuccess {String} firstName First name of the user
+ * @apiSuccess {String} lastName  Last name of the user
+ */
 
 /* GET events listing. */
 router.get('/', function(req, res, next) {
