@@ -8,18 +8,11 @@ const ObjectId = require('mongodb').ObjectID;
 
 /**
  * DOCUMENTATION API 
- * @api {get} /event/:_id Request a event's information
- * @apiName GetEvents
+ * @api {get} /events Request all event's information
+ * @apiName RetrieveEvents
  * @apiGroup Events
+ * @apiVersion 1.0.0
  *
- * @apiParam {Number} _id Unique identifier of the event
- * @apiParam {String} name name of the event
- * @apiParam {String} date date of the event
- * @apiParam {String} adress adress of the event
- * @apiParam {String} time planned hour of the event
- * @apiParam {String} description description of the event
- * @apiParam {array} member list of the participant of the event
- * @apiParam {boolean} public defines if the event is public or not
  */
 
 /* GET events listing. */
@@ -86,6 +79,22 @@ router.get('/filter', function(req, res, next) {
   });
 });
 
+/** 
+ * @api {get} /events/:_id Request an event's information
+ * @apiName RetrieveEvent
+ * @apiGroup Events
+ * @apiVersion 1.0.0
+ *
+ * @apiParam {Number} _id Unique identifier of the event
+ * @apiParam {String} name name of the event
+ * @apiParam {String} date date of the event
+ * @apiParam {String} adress adress of the event
+ * @apiParam {String} time planned hour of the event
+ * @apiParam {String} description description of the event
+ * @apiParam {array} member list of the participant of the event
+ * @apiParam {boolean} public defines if the event is public or not
+ */
+
 /* GET event listing. */
 router.get('/:_id', function(req, res, next) {
   Event.findById(req.params._id).exec(function(err, events) {
@@ -95,6 +104,22 @@ router.get('/:_id', function(req, res, next) {
     res.send(events);
   });
 });
+
+/** 
+ * @api {post} /events/:_id Create an event
+ * @apiName CreateEvent
+ * @apiGroup Events
+ * @apiVersion 1.0.0
+ *
+ * @apiParam {Number} _id Unique identifier of the event
+ * @apiParam {String} name name of the event
+ * @apiParam {String} date date of the event
+ * @apiParam {String} adress adress of the event
+ * @apiParam {String} time planned hour of the event
+ * @apiParam {String} description description of the event
+ * @apiParam {array} member list of the participant of the event
+ * @apiParam {boolean} public defines if the event is public or not
+ */
 
 /* post a new event. */
 router.post('/', function(req, res, next) {
@@ -126,6 +151,22 @@ router.post('/:_id/add', auth, function(req, res, next) {
   });
   
 });
+
+/** 
+ * @api {put} /event/:_id Update an event's information
+ * @apiName UpdateEvent
+ * @apiGroup Events
+ * @apiVersion 1.0.0
+ *
+ * @apiParam {Number} _id Unique identifier of the event
+ * @apiParam {String} name name of the event
+ * @apiParam {String} date date of the event
+ * @apiParam {String} adress adress of the event
+ * @apiParam {String} time planned hour of the event
+ * @apiParam {String} description description of the event
+ * @apiParam {array} member list of the participant of the event
+ * @apiParam {boolean} public defines if the event is public or not
+ */
 
 /* update event. */
 router.put('/:_id', function(req, res, next) {
