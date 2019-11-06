@@ -8,14 +8,18 @@ const ObjectId = require('mongodb').ObjectID;
 
 /**
  * DOCUMENTATION API 
- * @api {get} /users/:id Request a user's information
- * @apiName GetUser
- * @apiGroup User
+ * @api {get} /event/:_id Request a event's information
+ * @apiName GetEvents
+ * @apiGroup Events
  *
- * @apiParam {Number} id Unique identifier of the user
- *
- * @apiSuccess {String} firstName First name of the user
- * @apiSuccess {String} lastName  Last name of the user
+ * @apiParam {Number} _id Unique identifier of the event
+ * @apiParam {String} name name of the event
+ * @apiParam {String} date date of the event
+ * @apiParam {String} adress adress of the event
+ * @apiParam {String} time planned hour of the event
+ * @apiParam {String} description description of the event
+ * @apiParam {array} member list of the participant of the event
+ * @apiParam {boolean} public defines if the event is public or not
  */
 
 /* GET events listing. */

@@ -1,10 +1,10 @@
 [
   {
     "type": "get",
-    "url": "/users/:id",
-    "title": "Request a user's information",
-    "name": "GetUser",
-    "group": "User",
+    "url": "/event/:_id",
+    "title": "Request a event's information",
+    "name": "GetEvents",
+    "group": "Events",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -12,34 +12,63 @@
             "group": "Parameter",
             "type": "Number",
             "optional": false,
-            "field": "id",
-            "description": "<p>Unique identifier of the user</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "firstName",
-            "description": "<p>First name of the user</p>"
+            "field": "_id",
+            "description": "<p>Unique identifier of the event</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "lastName",
-            "description": "<p>Last name of the user</p>"
+            "field": "name",
+            "description": "<p>name of the event</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>date of the event</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "adress",
+            "description": "<p>adress of the event</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "time",
+            "description": "<p>planned hour of the event</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>description of the event</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "array",
+            "optional": false,
+            "field": "member",
+            "description": "<p>list of the participant of the event</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "boolean",
+            "optional": false,
+            "field": "public",
+            "description": "<p>defines if the event is public or not</p>"
           }
         ]
       }
     },
     "version": "0.0.0",
     "filename": "routes/events.js",
-    "groupTitle": "User"
+    "groupTitle": "Events"
   }
 ]
