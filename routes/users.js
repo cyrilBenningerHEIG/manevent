@@ -2,6 +2,7 @@
 var express = require('express');
 var router = express.Router();
 const User = require('../models/user');
+const Event = require('../models/event');
 const bcrypt = require('bcrypt');
 
 
@@ -11,17 +12,29 @@ router.get('/:_id', function(req, res, next) {
     if (err) {
       return next(err);
     }
-    User.aggregate([
-      {"$match":{"User":
-        {"$in" : "Member"}
-      }},
-      { $group: { NumberEvent: { $sum: 1 } } }
-      ]).exec(function(err,user){
+    Event.aggregate([
+      {
+        $match : { "member" : {$ne: ObjectId(Users._id)}},
+        $lookup:
+          {
+            from: "User",
+            localField: "member",    // field in the orders collection
+            foreignField: "_id",  // field in the items collection
+            as: "Member"
+          }
+          
+          //$in:{
+          
+          //}
+        
+      }
+      
+      ],function(err,user){
         if (err) {
           return next(err);
         }
         res.send(user);
-      })
+      });
 
     
   });
