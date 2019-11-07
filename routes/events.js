@@ -8,18 +8,44 @@ const ObjectId = require('mongodb').ObjectID;
 
 /**
  * DOCUMENTATION API 
- * @api {get} /events Request all event's information
+ * @api {get} /events Request all events' information
  * @apiName RetrieveEvents
  * @apiGroup Events
  * @apiVersion 1.0.0
+ * @apiDescription Retrieves a paginated list of events ordered by title (in alphabetical order).
+ * 
+ * @apiParam {Number} page page of the event
+ * @apiParam {Number} pageSize size of the page
+ *  * @apiExample Example
+ *     GET manevent.herokuapp.com/events HTTP/1.1
+ * @apiSuccessExample 201 OK
+ *     HTTP/1.1 201 OK
+ *     Content-Type: application/json
+ *     Link: &lt;https://manevent.herokuapp.com/events
+ *
+ *     [
+ {
+  "member": [
+    
+  ],
+  "_id": "5dc2d57714b81bd6f50ea8aa",
+  "name": "Marché de Noel de Clos Fleuri",
+  "date": "2019-11-30",
+  "adress": "Prilly",
+  "time": "11h00",
+  "description": "Venez boire une tasse avec nous et faire vos emplettes pour vos cadeaux de Noël!",
+  "public": true,
+  "__v": 0
+}
+ *     ]
  *
  */
 
 /* GET events listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
 
   let query = Event.find().sort('name');
-    // Parse the "page" param (default to 1 if invalid)
+  // Parse the "page" param (default to 1 if invalid)
   let page = parseInt(req.query.page, 10);
   if (isNaN(page) || page < 1) {
     page = 1;
@@ -32,21 +58,21 @@ router.get('/', function(req, res, next) {
   // Apply skip and limit to select the correct page of elements
   query = query.skip((page - 1) * pageSize).limit(pageSize);
 
-  query.exec(function(err, events) {
+  query.exec(function (err, events) {
     if (err) {
       return next(err);
     }
     res.send({
-        page: page,
-        pageSize: pageSize,
-        //total: total,
-        data: events
+      page: page,
+      pageSize: pageSize,
+      //total: total,
+      data: events
     });
   });
 });
 
 /* Filters */
-router.get('/filter', function(req, res, next) {
+router.get('/filter', function (req, res, next) {
   let query = Event.find();
 
   /* Filter events by name*/
@@ -55,14 +81,14 @@ router.get('/filter', function(req, res, next) {
   }
 
   /* Filter par param public */
-  if(req.query.public){
+  if (req.query.public) {
     query = query.where('public').equals(req.query.public); //Boolean()
-   }
+  }
 
-   /* Filter events by adress*/
-   if (req.query.adress){
-     query = query.where('adress').equals(req.query.adress);
-   }
+  /* Filter events by adress*/
+  if (req.query.adress) {
+    query = query.where('adress').equals(req.query.adress);
+  }
 
   // Filter events by date
   if (req.query.date) {
@@ -70,7 +96,7 @@ router.get('/filter', function(req, res, next) {
   }
 
   // Execute the query
-  query.exec(function(err, events) {
+  query.exec(function (err, events) {
     if (err) {
       return next(err);
     }
@@ -84,20 +110,37 @@ router.get('/filter', function(req, res, next) {
  * @apiName RetrieveEvent
  * @apiGroup Events
  * @apiVersion 1.0.0
+ * @apiDescription Retrieves one event.
  *
  * @apiParam {Number} _id Unique identifier of the event
- * @apiParam {String} name name of the event
- * @apiParam {String} date date of the event
- * @apiParam {String} adress adress of the event
- * @apiParam {String} time planned hour of the event
- * @apiParam {String} description description of the event
- * @apiParam {array} member list of the participant of the event
- * @apiParam {boolean} public defines if the event is public or not
+ * @apiExample Example
+ *     GET manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa HTTP/1.1
+ * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
+ *     Content-Type: application/json
+ *     Link: &lt;https://manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa;; rel="first prev"
+ *
+ *     [
+ *{
+ * "member": [
+ *   
+ * ],
+ * "_id": "5dc2d57714b81bd6f50ea8aa",
+ * "name": "Marché de Noel de Clos Fleuri",
+ * "date": "2019-11-30",
+ * "adress": "Prilly",
+ * "time": "11h00",
+ * "description": "Venez boire une tasse avec nous et faire vos emplettes pour vos cadeaux de Noël!",
+ * "public": true,
+ * "__v": 0
+*}
+ *     ]
+ * @apiError (404) EventNotFound The id of the Event was not found.
  */
 
 /* GET event listing. */
-router.get('/:_id', function(req, res, next) {
-  Event.findById(req.params._id).exec(function(err, events) {
+router.get('/:_id', function (req, res, next) {
+  Event.findById(req.params._id).exec(function (err, events) {
     if (err) {
       return next(err);
     }
@@ -106,27 +149,55 @@ router.get('/:_id', function(req, res, next) {
 });
 
 /** 
- * @api {post} /events/:_id Create an event
+ * @api {post} /events Create an event
  * @apiName CreateEvent
  * @apiGroup Events
  * @apiVersion 1.0.0
+ * @apiDescription Registers a new event.
  *
- * @apiParam {Number} _id Unique identifier of the event
- * @apiParam {String} name name of the event
- * @apiParam {String} date date of the event
- * @apiParam {String} adress adress of the event
- * @apiParam {String} time planned hour of the event
- * @apiParam {String} description description of the event
- * @apiParam {array} member list of the participant of the event
- * @apiParam {boolean} public defines if the event is public or not
+ * @apiParam (Request body) {String} name name of the event
+ * @apiParam (Request body) {String} date date of the event
+ * @apiParam (Request body) {String} adress adress of the event
+ * @apiParam (Request body) {String} time planned hour of the event
+ * @apiParam (Request body) {String} description description of the event
+ * @apiParam (Request body) {array} member list of the participants of the event
+ * @apiParam (Request body) {boolean} public defines if the event is public or not
+ * @apiExample Example
+ *     POST manevent.herokuapp.com/events HTTP/1.1
+ *     Content-Type: application/json
+ *
+ *     { "name": "Caprices Festival 2020",
+ *           "date": "2020-04-16",
+*          "adress": "Crans-Montana",
+*           "time": "19h00",
+ *           "description": "Caprices Festival is a four-day festival that takes place in Crans-Montana, Switzerland, on three different stages",
+  *          "public": true,
+            "member": []
+*}
+ *
+ * @apiSuccessExample 201 Created
+ *     HTTP/1.1 201 Created
+ *     Content-Type: application/json
+ *     Location: https://evening-meadow-25867.herokuapp.com/api/movies/58b2926f5e1def0123e97281
+*{
+*    "member": [],
+*    "_id": "5dc3f1ed87ca9ddf9882f5b3",
+*    "name": "Caprices Festival 2020",
+*    "date": "2020-04-16",
+*    "adress": "Crans-Montana",
+*    "time": "19h00",
+*    "description": "Caprices Festival is a four-day festival that takes place in Crans-Montana, Switzerland, on three different stages",
+*    "public": true,
+*    "__v": 0
+*}
  */
 
 /* post a new event. */
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
   // Create a new document from the JSON in the request body
   const newEvent = new Event(req.body);
   // Save that document
-  newEvent.save(function(err, savedEvent) {
+  newEvent.save(function (err, savedEvent) {
     if (err) {
       return next(err);
     }
@@ -135,13 +206,13 @@ router.post('/', function(req, res, next) {
   });
 });
 
-router.post('/:_id/add', auth, function(req, res, next) {
+router.post('/:_id/add', auth, function (req, res, next) {
   // If we reach this function, the previous authentication middleware
   // has done its job, i.e. a valid JWT was in the Authorization header.
   const currentUserId = req.currentUserId;
-  Event.findById(req.params._id,function(err,event){
+  Event.findById(req.params._id, function (err, event) {
     event.Member.push(currentUserId);
-    event.save(function(err,savedEvent){
+    event.save(function (err, savedEvent) {
       if (err) {
         return next(err);
       }
@@ -149,7 +220,7 @@ router.post('/:_id/add', auth, function(req, res, next) {
       res.send(savedEvent);
     });
   });
-  
+
 });
 
 /** 
@@ -157,19 +228,40 @@ router.post('/:_id/add', auth, function(req, res, next) {
  * @apiName UpdateEvent
  * @apiGroup Events
  * @apiVersion 1.0.0
+ * @apiDescription Partially updates an event's data (only the properties found in the request body will be updated).
+ * All properties are optional.
  *
  * @apiParam {Number} _id Unique identifier of the event
- * @apiParam {String} name name of the event
- * @apiParam {String} date date of the event
- * @apiParam {String} adress adress of the event
- * @apiParam {String} time planned hour of the event
- * @apiParam {String} description description of the event
- * @apiParam {array} member list of the participant of the event
- * @apiParam {boolean} public defines if the event is public or not
+ * @apiParam (Request body) {String} name name of the event
+ * @apiParam (Request body) {String} date date of the event
+ * @apiParam (Request body) {String} adress adress of the event
+ * @apiParam (Request body) {String} time planned hour of the event
+ * @apiParam (Request body) {String} description description of the event
+ * @apiParam (Request body) {array} member list of the participants of the event
+ * @apiParam (Request body) {boolean} public defines if the event is public or not
+ * @apiExample Example
+ *     PUT manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa HTTP/1.1
+ * Content-Type: application/json
+ * { "name": "Caprices Festival 2021"
+*}
+* @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
+ *     Content-Type: application/json
+ * {
+*    "member": [],
+*    "_id": "5dc3f1ed87ca9ddf9882f5b3",
+*    "name": "Caprices Festival 2021",
+*    "date": "2020-04-16",
+*    "adress": "Crans-Montana",
+*    "time": "19h00",
+*    "description": "Caprices Festival is a four-day festival that takes place in Crans-Montana, Switzerland, on three different stages",
+*    "public": true,
+*    "__v": 0
+*}
  */
 
 /* update event. */
-router.put('/:_id', function(req, res, next) {
+router.put('/:_id', function (req, res, next) {
   Event.findByIdAndUpdate(
     // the id of the item to find
     req.params._id,
@@ -180,17 +272,32 @@ router.put('/:_id', function(req, res, next) {
 
     // the callback function
     (err, event) => {
-    // Handle any possible database errors
-        if (err) return res.status(500).send(err);
-        return res.send(event);
+      // Handle any possible database errors
+      if (err) return res.status(500).send(err);
+      return res.send(event);
     });
 });
 
+/** 
+ * @api {delete} /event/:_id Delete an event
+ * @apiName DeleteEvent
+ * @apiGroup Events
+ * @apiVersion 1.0.0
+ * @apiDescription Permanently deletes an event.
+ *
+ * @apiParam {Number} _id Unique identifier of the event
+ * @apiExample Example
+ *     DELETE manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa HTTP/1.1
+ *
+ * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 The event has been deleted
+ */
+
 /* delete event */
-router.delete('/:_id', function(req, res, next) {
+router.delete('/:_id', function (req, res, next) {
   Event.findByIdAndDelete(
     req.params._id,
-    (err,event));
+    (err, event));
 
 });
 
