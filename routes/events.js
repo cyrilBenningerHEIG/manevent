@@ -8,14 +8,14 @@ const ObjectId = require('mongodb').ObjectID;
 
 /**
  * DOCUMENTATION API 
- * @api {get} /events Request all events' information
+ * @api {get} /events Request all events' informations
  * @apiName RetrieveEvents
- * @apiGroup Events
+ * @apiGroup Event
  * @apiVersion 1.0.0
  * @apiDescription Retrieves a paginated list of events ordered by title (in alphabetical order).
  * 
- * @apiParam {Number} page page of the event
- * @apiParam {Number} pageSize size of the page
+ * @apiParam {Number} [page] page of the event
+ * @apiParam {Number} [pageSize] size of the page
  *  * @apiExample Example
  *     GET manevent.herokuapp.com/events HTTP/1.1
  * @apiSuccessExample 201 OK
@@ -106,9 +106,9 @@ router.get('/filter', function (req, res, next) {
 });
 
 /** 
- * @api {get} /events/:_id Request an event's information
+ * @api {get} /events/:_id Request an event's informations
  * @apiName RetrieveEvent
- * @apiGroup Events
+ * @apiGroup Event
  * @apiVersion 1.0.0
  * @apiDescription Retrieves one event.
  *
@@ -118,7 +118,7 @@ router.get('/filter', function (req, res, next) {
  * @apiSuccessExample 200 OK
  *     HTTP/1.1 200 OK
  *     Content-Type: application/json
- *     Link: &lt;https://manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa;; rel="first prev"
+ *     Link: &lt;https://manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa;;
  *
  *     [
  *{
@@ -135,7 +135,7 @@ router.get('/filter', function (req, res, next) {
  * "__v": 0
 *}
  *     ]
- * @apiError (404) EventNotFound The id of the Event was not found.
+ * @apiUse EventNotFoundError
  */
 
 /* GET event listing. */
@@ -151,17 +151,12 @@ router.get('/:_id', function (req, res, next) {
 /** 
  * @api {post} /events Create an event
  * @apiName CreateEvent
- * @apiGroup Events
+ * @apiGroup Event
  * @apiVersion 1.0.0
  * @apiDescription Registers a new event.
- *
- * @apiParam (Request body) {String} name name of the event
- * @apiParam (Request body) {String} date date of the event
- * @apiParam (Request body) {String} adress adress of the event
- * @apiParam (Request body) {String} time planned hour of the event
- * @apiParam (Request body) {String} description description of the event
- * @apiParam (Request body) {array} member list of the participants of the event
- * @apiParam (Request body) {boolean} public defines if the event is public or not
+ * @apiUse EventInRequestBody
+ * @apiUse EventInResponseBody
+ * 
  * @apiExample Example
  *     POST manevent.herokuapp.com/events HTTP/1.1
  *     Content-Type: application/json
@@ -223,21 +218,16 @@ router.post('/:_id/add', auth, function (req, res, next) {
 });
 
 /** 
- * @api {put} /event/:_id Update an event's information
+ * @api {put} /event/:_id Update an event's informations
  * @apiName UpdateEvent
- * @apiGroup Events
+ * @apiGroup Event
  * @apiVersion 1.0.0
  * @apiDescription Partially updates an event's data (only the properties found in the request body will be updated).
  * All properties are optional.
  *
  * @apiParam {Number} _id Unique identifier of the event
- * @apiParam (Request body) {String} name name of the event
- * @apiParam (Request body) {String} date date of the event
- * @apiParam (Request body) {String} adress adress of the event
- * @apiParam (Request body) {String} time planned hour of the event
- * @apiParam (Request body) {String} description description of the event
- * @apiParam (Request body) {array} member list of the participants of the event
- * @apiParam (Request body) {boolean} public defines if the event is public or not
+ * @apiUse EventInRequestBody
+ * @apiUse EventInResponseBody
  * @apiExample Example
  *     PUT manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa HTTP/1.1
  * Content-Type: application/json
@@ -278,18 +268,18 @@ router.put('/:_id', function (req, res, next) {
 });
 
 /** 
- * @api {delete} /event/:_id Delete an event
+ * @api {delete} /events/:_id Delete an event
  * @apiName DeleteEvent
- * @apiGroup Events
+ * @apiGroup Event
  * @apiVersion 1.0.0
  * @apiDescription Permanently deletes an event.
  *
- * @apiParam {Number} _id Unique identifier of the event
+ * @apiParam (URL path parameters) {Number} _id The unique identifier of the event to retrieve
  * @apiExample Example
  *     DELETE manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa HTTP/1.1
- *
  * @apiSuccessExample 200 OK
  *     HTTP/1.1 200 The event has been deleted
+ * @apiUse EventNotFoundError
  */
 
 /* delete event */
@@ -304,7 +294,38 @@ router.delete('/:_id', function (req, res, next) {
 
 });
 
-
-
-
 module.exports = router;
+
+/**
+ * @apiDefine EventInRequestBody
+ * @apiParam (Request body) {String} name name of the event
+ * @apiParam (Request body) {String} date date of the event
+ * @apiParam (Request body) {String} adress adress of the event
+ * @apiParam (Request body) {String} time planned hour of the event
+ * @apiParam (Request body) {String} description description of the event
+ * @apiParam (Request body) {array} member list of the participants of the event
+ * @apiParam (Request body) {boolean} public defines if the event is public or not
+ */
+/** 
+ * @apiDefine EventInResponseBody
+ * @apiParam (Response body) {String} name name of the event
+ * @apiParam (Response body) {String} date date of the event. Date will be automatically formated to the EU standards 
+ * @apiParam (Response body) {String} adress adress of the event
+ * @apiParam (Response body) {String} time planned hour of the event
+ * @apiParam (Response body) {String} description description of the event
+ * @apiParam (Response body) {array} member list of the participants of the event
+ * @apiParam (Response body) {boolean} public defines if the event is public or not
+ */
+/**
+ * @apiDefine EventNotFoundError
+ *
+ * @apiError {Object} 404/NotFound No event was found corresponding to the ID in the URL path
+ *
+ * @apiErrorExample {json} 404 Not Found
+ *     HTTP/1.1 404 Not Found
+ *     Content-Type: text/plain
+ *
+ *     No event found with ID 58b2926f5e1def0123e97281
+ */
+
+
