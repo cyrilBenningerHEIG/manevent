@@ -211,11 +211,7 @@ router.post('/:_id/add', auth, function (req, res, next) {
   // has done its job, i.e. a valid JWT was in the Authorization header.
   const currentUserId = req.currentUserId;
   Event.findById(req.params._id, function (err, event) {
-<<<<<<< HEAD
-    event.Member.push(currentUserId);
-=======
     event.member.push(currentUserId);
->>>>>>> 851438bc08243ef1dbd7bde92d945810dba7509e
     event.save(function (err, savedEvent) {
       if (err) {
         return next(err);
@@ -224,10 +220,6 @@ router.post('/:_id/add', auth, function (req, res, next) {
       res.send(savedEvent);
     });
   });
-<<<<<<< HEAD
-
-=======
->>>>>>> 851438bc08243ef1dbd7bde92d945810dba7509e
 });
 
 /** 
@@ -304,15 +296,11 @@ router.put('/:_id', function (req, res, next) {
 router.delete('/:_id', function (req, res, next) {
   Event.findByIdAndDelete(
     req.params._id,
-<<<<<<< HEAD
-    (err, event));
-=======
     (err, event) => {
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
       return res.status(200).send('The event has been deleted');;
     });
->>>>>>> 851438bc08243ef1dbd7bde92d945810dba7509e
 
 });
 
