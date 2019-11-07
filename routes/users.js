@@ -14,22 +14,18 @@ router.get('/:_id', function(req, res, next) {
     }
     Event.aggregate([
       {
-        $match : { "member" : {$ne: ObjectId(Users._id)}},
-        $lookup:
-          {
-            from: "User",
-            localField: "member",    // field in the orders collection
-            foreignField: "_id",  // field in the items collection
-            as: "Member"
-          }
-          
-          //$in:{
-          
-          //}
-        
-      }
-      
-      ],function(err,user){
+        $match : {
+          "member" : Users._id
+        }
+      },
+      { 
+        $count: "isMember" 
+      },
+      {    
+        $addFields: {
+          detail: Users 
+        }
+      }],function(err,user){
         if (err) {
           return next(err);
         }

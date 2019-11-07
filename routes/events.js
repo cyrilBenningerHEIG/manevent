@@ -115,7 +115,7 @@ router.post('/:_id/add', auth, function(req, res, next) {
   // has done its job, i.e. a valid JWT was in the Authorization header.
   const currentUserId = req.currentUserId;
   Event.findById(req.params._id,function(err,event){
-    event.Member.push(currentUserId);
+    event.member.push(currentUserId);
     event.save(function(err,savedEvent){
       if (err) {
         return next(err);
@@ -123,8 +123,7 @@ router.post('/:_id/add', auth, function(req, res, next) {
       // Send the saved document in the response
       res.send(savedEvent);
     });
-  });
-  
+  });  
 });
 
 /* update event. */
