@@ -16,10 +16,10 @@ const ObjectId = require('mongodb').ObjectID;
  */
 
 /* GET events listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
 
   let query = Event.find().sort('name');
-    // Parse the "page" param (default to 1 if invalid)
+  // Parse the "page" param (default to 1 if invalid)
   let page = parseInt(req.query.page, 10);
   if (isNaN(page) || page < 1) {
     page = 1;
@@ -32,21 +32,21 @@ router.get('/', function(req, res, next) {
   // Apply skip and limit to select the correct page of elements
   query = query.skip((page - 1) * pageSize).limit(pageSize);
 
-  query.exec(function(err, events) {
+  query.exec(function (err, events) {
     if (err) {
       return next(err);
     }
     res.send({
-        page: page,
-        pageSize: pageSize,
-        //total: total,
-        data: events
+      page: page,
+      pageSize: pageSize,
+      //total: total,
+      data: events
     });
   });
 });
 
 /* Filters */
-router.get('/filter', function(req, res, next) {
+router.get('/filter', function (req, res, next) {
   let query = Event.find();
 
   /* Filter events by name*/
@@ -55,14 +55,14 @@ router.get('/filter', function(req, res, next) {
   }
 
   /* Filter par param public */
-  if(req.query.public){
+  if (req.query.public) {
     query = query.where('public').equals(req.query.public); //Boolean()
-   }
+  }
 
-   /* Filter events by adress*/
-   if (req.query.adress){
-     query = query.where('adress').equals(req.query.adress);
-   }
+  /* Filter events by adress*/
+  if (req.query.adress) {
+    query = query.where('adress').equals(req.query.adress);
+  }
 
   // Filter events by date
   if (req.query.date) {
@@ -70,7 +70,7 @@ router.get('/filter', function(req, res, next) {
   }
 
   // Execute the query
-  query.exec(function(err, events) {
+  query.exec(function (err, events) {
     if (err) {
       return next(err);
     }
@@ -96,8 +96,8 @@ router.get('/filter', function(req, res, next) {
  */
 
 /* GET event listing. */
-router.get('/:_id', function(req, res, next) {
-  Event.findById(req.params._id).exec(function(err, events) {
+router.get('/:_id', function (req, res, next) {
+  Event.findById(req.params._id).exec(function (err, events) {
     if (err) {
       return next(err);
     }
@@ -122,11 +122,11 @@ router.get('/:_id', function(req, res, next) {
  */
 
 /* post a new event. */
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
   // Create a new document from the JSON in the request body
   const newEvent = new Event(req.body);
   // Save that document
-  newEvent.save(function(err, savedEvent) {
+  newEvent.save(function (err, savedEvent) {
     if (err) {
       return next(err);
     }
@@ -135,20 +135,20 @@ router.post('/', function(req, res, next) {
   });
 });
 
-router.post('/:_id/add', auth, function(req, res, next) {
+router.post('/:_id/add', auth, function (req, res, next) {
   // If we reach this function, the previous authentication middleware
   // has done its job, i.e. a valid JWT was in the Authorization header.
   const currentUserId = req.currentUserId;
-  Event.findById(req.params._id,function(err,event){
+  Event.findById(req.params._id, function (err, event) {
     event.member.push(currentUserId);
-    event.save(function(err,savedEvent){
+    event.save(function (err, savedEvent) {
       if (err) {
         return next(err);
       }
       // Send the saved document in the response
       res.send(savedEvent);
     });
-  });  
+  });
 });
 
 /** 
@@ -168,7 +168,7 @@ router.post('/:_id/add', auth, function(req, res, next) {
  */
 
 /* update event. */
-router.put('/:_id', function(req, res, next) {
+router.put('/:_id', function (req, res, next) {
   Event.findByIdAndUpdate(
     // the id of the item to find
     req.params._id,
@@ -179,17 +179,21 @@ router.put('/:_id', function(req, res, next) {
 
     // the callback function
     (err, event) => {
-    // Handle any possible database errors
-        if (err) return res.status(500).send(err);
-        return res.send(event);
+      // Handle any possible database errors
+      if (err) return res.status(500).send(err);
+      return res.send(event);
     });
 });
 
 /* delete event */
-router.delete('/:_id', function(req, res, next) {
+router.delete('/:_id', function (req, res, next) {
   Event.findByIdAndDelete(
     req.params._id,
-    (err,event));
+    (err, event) => {
+      // Handle any possible database errors
+      if (err) return res.status(500).send(err);
+      return res.status(200).send('The event has been deleted');;
+    });
 
 });
 
