@@ -210,6 +210,57 @@
             "field": "_id",
             "description": "<p>Unique identifier of the event</p>"
           }
+        ],
+        "Request body": [
+          {
+            "group": "Request body",
+            "type": "String",
+            "optional": true,
+            "field": "name",
+            "description": "<p>name of the event</p>"
+          },
+          {
+            "group": "Request body",
+            "type": "String",
+            "optional": true,
+            "field": "date",
+            "description": "<p>date of the event</p>"
+          },
+          {
+            "group": "Request body",
+            "type": "String",
+            "optional": true,
+            "field": "adress",
+            "description": "<p>adress of the event</p>"
+          },
+          {
+            "group": "Request body",
+            "type": "String",
+            "optional": true,
+            "field": "time",
+            "description": "<p>planned hour of the event</p>"
+          },
+          {
+            "group": "Request body",
+            "type": "String",
+            "optional": true,
+            "field": "description",
+            "description": "<p>description of the event</p>"
+          },
+          {
+            "group": "Request body",
+            "type": "array",
+            "optional": true,
+            "field": "member",
+            "description": "<p>list of the participants of the event</p>"
+          },
+          {
+            "group": "Request body",
+            "type": "boolean",
+            "optional": true,
+            "field": "public",
+            "description": "<p>defines if the event is public or not</p>"
+          }
         ]
       }
     },
