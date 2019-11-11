@@ -16,9 +16,15 @@ function formatDate(date) {
 
 // Define the schema for users
 const eventSchema = new Schema({
-  name: String,
+  name: {
+    type: String,
+    required:true,
+    min:3,
+    max : 255
+  },
   date: {
     type: String,
+    required:true,
     set: date => formatDate(date)
   },
   adress: String,
