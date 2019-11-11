@@ -18,8 +18,8 @@ const ObjectId = require('mongodb').ObjectID;
  * @apiParam {Number} [pageSize] size of the page
  *  * @apiExample Example
  *     GET manevent.herokuapp.com/events HTTP/1.1
- * @apiSuccessExample 201 OK
- *     HTTP/1.1 201 OK
+ * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
  *     Content-Type: application/json
  *     Link: &lt;https://manevent.herokuapp.com/events
  *
@@ -113,6 +113,13 @@ router.get('/filter', function (req, res, next) {
  * @apiDescription Retrieves one event.
  *
  * @apiParam {Number} _id Unique identifier of the event
+ * @apiParam (Request body) {String} [name] name of the event
+ * @apiParam (Request body) {String} [date] date of the event
+ * @apiParam (Request body) {String} [adress] adress of the event
+ * @apiParam (Request body) {String} [time] planned hour of the event
+ * @apiParam (Request body) {String} [description] description of the event
+ * @apiParam (Request body) {array} [member] list of the participants of the event
+ * @apiParam (Request body) {boolean} [public] defines if the event is public or not
  * @apiExample Example
  *     GET manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa HTTP/1.1
  * @apiSuccessExample 200 OK
