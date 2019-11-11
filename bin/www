@@ -15,6 +15,11 @@ var http = require('http');
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+/**¨
+* Get namespace
+*/
+const namespace = process.env.NAMESPACE || 'com.herokuapp.manevent';
+
 /**
  * Create HTTP server.
  */
