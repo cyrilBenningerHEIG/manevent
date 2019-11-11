@@ -7,11 +7,12 @@
 // const GameController = require('./controller/game.controller');
 // const PlayerController = require('./controller/player.controller');
 
+require ('dotenv').config();
+
 /**
  * Creates the backend's dispatcher.
- * @param {HttpServer} server - The application's {@link https://nodejs.org/docs/latest-v12.x/api/http.html#http_class_http_server|Node.js HTTP server}.
  */
-exports.createBackendDispatcher = function(server) {
+exports.createBackendDispatcher = function() {
 
   // SETUP
   // =====
@@ -120,13 +121,22 @@ exports.createBackendDispatcher = function(server) {
    *     }
    */
 
-  // PLAYER MANAGEMENT
+  // MSG MANAGEMENT
   // =================
+  function initChat() {
 
-  // TODO: write game management functions if you need them
+  logger.info(`It worked Yay !`);
+  console.log('hello!');
+
+}
 
   // COMMUNICATIONS
   // ==============
+  /**¨
+  * Get namespace
+  */
+  const namespace = process.env.MANEVENT_NAMESPACE || 'com.herokuapp.manevent';
+  const secret = process.env.MANEVENT_SECRET || '';
 
   // backend's communications with Web Application Messaging Protocol (WAMP)
   const autobahn = require('autobahn');
@@ -140,9 +150,14 @@ exports.createBackendDispatcher = function(server) {
         return secret;
       }
     });
+
     connection.onopen = function(session) {
-      logger.info('Connection to WAMP router established');
-};
+      console.log('Connection to WAMP router established');
+      session.register(`${namespace}.initChat`, () => initChat()).catch(onRegistrationFailure);
+
+
+    };
+
     connection.open();
 
 };

@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('manevent:server');
 var http = require('http');
+const { createBackendDispatcher } = require('../dispatcher');
 
 /**
  * Get port from environment and store in Express.
@@ -15,16 +16,14 @@ var http = require('http');
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-/**¨
-* Get namespace
-*/
-const namespace = process.env.NAMESPACE || 'com.herokuapp.manevent';
-
 /**
  * Create HTTP server.
  */
 
 var server = http.createServer(app);
+
+
+createBackendDispatcher(server);
 
 /**
  * Listen on provided port, on all network interfaces.
