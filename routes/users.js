@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 const User = require('../models/user');
 const Event = require('../models/event');
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 /** 
@@ -24,32 +25,34 @@ const bcrypt = require('bcrypt');
  */
 
 /* GET User listing. */
-router.get('/:_id', function(req, res, next) {
-  User.findById(req.params._id).exec(function(err, Users) {
+router.get('/:_id', function (req, res, next) {
+  if(checkID(req.params._id)) return res.send("This ID is not valid");
+  User.findById(req.params._id).exec(function (err, Users) {
     if (err) {
       return next(err);
     }
+    if(checkEmpty(Users)) return res.send("The event doesn't exist");
     Event.aggregate([
       {
-        $match : {
-          "member" : Users._id
+        $match: {
+          "member": Users._id
         }
       },
-      { 
-        $count: "isMember" 
+      {
+        $count: "isMember"
       },
-      {    
+      {
         $addFields: {
-          detail: Users 
+          Users
         }
-      }],function(err,user){
+      }], function (err, user) {
         if (err) {
           return next(err);
         }
         res.send(user);
       });
 
-    
+
   });
 });
 /** 
@@ -83,24 +86,24 @@ router.get('/:_id', function(req, res, next) {
  */
 
 /* post a new User. */
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
   const plainPassword = req.body.password;
   const saltRounds = 10;
-  bcrypt.hash(plainPassword, saltRounds, function(err, hashedPassword){
+  bcrypt.hash(plainPassword, saltRounds, function (err, hashedPassword) {
     if (err) {
       return next(err);
     }
-  // Create a new document from the JSON in the request body
-  const newUser = new User(req.body);
-  newUser.password = hashedPassword;
-  // Save that document
-  newUser.save(function(err, savedUser) {
-    if (err) {
-      return next(err);
-    }
-    // Send the saved document in the response
-    res.send(savedUser);
-  });
+    // Create a new document from the JSON in the request body
+    const newUser = new User(req.body);
+    newUser.password = hashedPassword;
+    // Save that document
+    newUser.save(function (err, savedUser) {
+      if (err) {
+        return next(err);
+      }
+      // Send the saved document in the response
+      res.send(savedUser);
+    });
   });
 });
 
@@ -135,7 +138,8 @@ router.post('/', function(req, res, next) {
  */
 
 /* update User. */
-router.put('/:_id', function(req, res, next) {
+router.put('/:_id', function (req, res, next) {
+  if(checkID(req.params._id)) return res.send("This ID is not valid");
   User.findByIdAndUpdate(
     // the id of the item to find
     req.params._id,
@@ -146,9 +150,10 @@ router.put('/:_id', function(req, res, next) {
 
     // the callback function
     (err, Users) => {
-    // Handle any possible database errors
-        if (err) return res.status(500).send(err);
-        return res.send(Users);
+      // Handle any possible database errors
+      if (err) return res.status(500).send(err);
+      if(checkEmpty(Users)) return res.send("The event doesn't exist");
+      return res.send(Users);
     });
 });
 
@@ -168,12 +173,25 @@ router.put('/:_id', function(req, res, next) {
  */
 
 /* delete User. */
-router.delete('/:_id', function(req, res, next) {
+router.delete('/:_id', function (req, res, next) {
+  if(checkID(req.params._id)) return res.send("This ID is not valid");
   User.findByIdAndDelete(
     req.params._id,
-    (err,Users));
-
+    (err, Users) => {
+      // Handle any possible database errors
+      if (err) return res.status(500).send(err);
+      if(checkEmpty(Users)) return res.send("The user doesn't exist");
+      return res.status(200).send('The user has been deleted');
+    });
 });
+
+function checkID(id) {
+  return !mongoose.Types.ObjectId.isValid(id);
+
+}
+function checkEmpty(event) {
+return event === null;
+}
 
 module.exports = router;
 
@@ -181,9 +199,9 @@ module.exports = router;
  * @apiDefine UserInRequestBody
  * @apiParam (Request body) {String} name name of the user
  * @apiParam (Request body) {String} email email of the user
- * @apiParam (Request body) {String} password password of the user. 
+ * @apiParam (Request body) {String} password password of the user.
  */
-/** 
+/**
  * @apiDefine UserInResponseBody
  * @apiParam (Response body) {String} name name of the user
  * @apiParam (Response body) {String} email email of the user

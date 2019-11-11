@@ -4,7 +4,7 @@ var express = require('express');
 const auth = require("../middleware/auth");
 var router = express.Router();
 const Event = require('../models/event');
-const ObjectId = require('mongodb').ObjectID;
+const mongoose = require('mongoose');
 
 /**
  * DOCUMENTATION API 
@@ -140,12 +140,15 @@ router.get('/filter', function (req, res, next) {
 
 /* GET event listing. */
 router.get('/:_id', function (req, res, next) {
+  if(checkID(req.params._id)) return res.send("This ID is not valid");
   Event.findById(req.params._id).exec(function (err, events) {
     if (err) {
       return next(err);
     }
+    if(checkEmpty(events)) return res.send("The event doesn't exist");
     res.send(events);
   });
+
 });
 
 /** 
@@ -205,7 +208,9 @@ router.post('/:_id/add', auth, function (req, res, next) {
   // If we reach this function, the previous authentication middleware
   // has done its job, i.e. a valid JWT was in the Authorization header.
   const currentUserId = req.currentUserId;
+  if(checkID(req.params._id)) return res.send("This ID is not valid");
   Event.findById(req.params._id, function (err, event) {
+    if(checkEmpty(event)) return res.send("The event doesn't exist");
     event.member.push(currentUserId);
     event.save(function (err, savedEvent) {
       if (err) {
@@ -251,6 +256,7 @@ router.post('/:_id/add', auth, function (req, res, next) {
 
 /* update event. */
 router.put('/:_id', function (req, res, next) {
+  if(checkID(req.params._id)) return res.send("This ID is not valid");
   Event.findByIdAndUpdate(
     // the id of the item to find
     req.params._id,
@@ -263,6 +269,7 @@ router.put('/:_id', function (req, res, next) {
     (err, event) => {
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
+      if(checkEmpty(event)) return res.send("The event doesn't exist");
       return res.send(event);
     });
 });
@@ -284,15 +291,25 @@ router.put('/:_id', function (req, res, next) {
 
 /* delete event */
 router.delete('/:_id', function (req, res, next) {
+  if(checkID(req.params._id)) return res.send("This ID is not valid");
   Event.findByIdAndDelete(
     req.params._id,
     (err, event) => {
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
-      return res.status(200).send('The event has been deleted');;
+      if(checkEmpty(event)) return res.send("The event doesn't exist");
+      return res.status(200).send('The event has been deleted');
     });
 
 });
+
+function checkID(id) {
+    return !mongoose.Types.ObjectId.isValid(id);
+  
+}
+function checkEmpty(event) {
+ return event === null;
+}
 
 module.exports = router;
 
@@ -306,10 +323,10 @@ module.exports = router;
  * @apiParam (Request body) {array} member list of the participants of the event
  * @apiParam (Request body) {boolean} public defines if the event is public or not
  */
-/** 
+/**
  * @apiDefine EventInResponseBody
  * @apiParam (Response body) {String} name name of the event
- * @apiParam (Response body) {String} date date of the event. Date will be automatically formated to the EU standards 
+ * @apiParam (Response body) {String} date date of the event. Date will be automatically formated to the EU standards
  * @apiParam (Response body) {String} adress adress of the event
  * @apiParam (Response body) {String} time planned hour of the event
  * @apiParam (Response body) {String} description description of the event
