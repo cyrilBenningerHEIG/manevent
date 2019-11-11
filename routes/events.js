@@ -45,6 +45,27 @@ const mongoose = require('mongoose');
 router.get('/', function (req, res, next) {
 
   let query = Event.find().sort('name');
+
+  // Add filter if exist
+  /* Filter events by name*/
+  if (req.query.name) {
+    query = query.where('name').equals(req.query.name);
+  }
+
+  /* Filter par param public */
+  if (req.query.public) {
+    query = query.where('public').equals(req.query.public); //Boolean()
+  }
+
+  /* Filter events by adress*/
+  if (req.query.adress) {
+    query = query.where('adress').equals(req.query.adress);
+  }
+
+  // Filter events by date
+  if (req.query.date) {
+    query = query.where('date').equals(req.query.date);
+  }
   // Parse the "page" param (default to 1 if invalid)
   let page = parseInt(req.query.page, 10);
   if (isNaN(page) || page < 1) {
@@ -71,39 +92,6 @@ router.get('/', function (req, res, next) {
   });
 });
 
-/* Filters */
-router.get('/filter', function (req, res, next) {
-  let query = Event.find();
-
-  /* Filter events by name*/
-  if (req.query.name) {
-    query = query.where('name').equals(req.query.name);
-  }
-
-  /* Filter par param public */
-  if (req.query.public) {
-    query = query.where('public').equals(req.query.public); //Boolean()
-  }
-
-  /* Filter events by adress*/
-  if (req.query.adress) {
-    query = query.where('adress').equals(req.query.adress);
-  }
-
-  // Filter events by date
-  if (req.query.date) {
-    query = query.where('date').equals(req.query.date);
-  }
-
-  // Execute the query
-  query.exec(function (err, events) {
-    if (err) {
-      return next(err);
-    }
-
-    res.send(events);
-  });
-});
 
 /** 
  * @api {get} /events/:_id Request an event's informations
