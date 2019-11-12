@@ -62,4 +62,23 @@ describe('GET /users', function() {
   });
 });
 
+describe('DELETE /users', function() {
+
+  // Create 1 user in the database before each test in this block.
+  beforeEach(async function() {
+    await Promise.all([
+      User.create({ _id:'5dc95b9d86d6c4131fedd779', name: 'Test Test', email: 'test1@heig-vd.ch', password: 'test1' }),
+    ]);
+  });
+
+  it('should delete a user', async function() {
+
+    // Make a DELETE request on /api/people.
+    const res = await supertest(app)
+      .delete('/users/:id')
+      // Check that the response is 200 OK with a JSON body.
+      .expect(200)
+  });
+});
+
 after(mongoose.disconnect);
