@@ -2,9 +2,9 @@ const { expect } = require('chai');
 const supertest = require('supertest');
 const app = require('../app');
 const mongoose = require('mongoose');
-const { cleanUpDatabase } = require('./utils');
+const { cleanUpEventDatabase } = require('./utils');
 
-beforeEach(cleanUpDatabase);
+beforeEach(cleanUpEventDatabase);
 
 describe('POST /events', function () {
   it('should create a user', async function () {
