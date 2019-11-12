@@ -1,11 +1,12 @@
 //jshint esversion:6
+const Message = require('./models/message');
 
 class ChatController {
   async createNewMsg(session, params) {
 
     const savedMessage = await new Message(params).save();
 
-    // session.publish()
+    session.publish(savedMessage);
 
     return savedMessage;
   }
@@ -17,4 +18,4 @@ class ChatController {
 }
 
 exports.ChatController = ChatController;
-exports.Chat = Chat;
+

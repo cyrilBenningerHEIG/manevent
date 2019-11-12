@@ -1,6 +1,6 @@
 //jshint esversion:6
 /* eslint-disable */
-const controller = equire('./controller');
+const controller = require('./controller');
 const ChatController = controller.ChatController;
 require('dotenv').config();
 //const Msg = require('../models/msg');
@@ -26,7 +26,7 @@ const connection = new autobahn.Connection({
 
 connection.onopen = function(session) {
   console.log('Connection to WAMP router established');
-  session.register(`${namespace}.createMsg`, (args, params) => chat.createNewMsg(params));
+  session.register(`${namespace}.createMsg`, (args, params) => chat.createNewMsg(1,params));
   // controleur "created at", "userId", "eventId"
 
 };

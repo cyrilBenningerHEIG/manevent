@@ -199,7 +199,7 @@ router.post('/', function (req, res, next) {
   });
 });
 
-router.post('/:_id/add', auth, function (req, res, next) {
+router.post('/:_id/member', auth, function (req, res, next) {
   // If we reach this function, the previous authentication middleware
   // has done its job, i.e. a valid JWT was in the Authorization header.
   const currentUserId = req.currentUserId;
