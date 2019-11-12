@@ -341,8 +341,8 @@
     "success": {
       "examples": [
         {
-          "title": "201 OK",
-          "content": "    HTTP/1.1 201 OK\n    Content-Type: application/json\n    Link: &lt;https://manevent.herokuapp.com/events\n\n    [\n {\n  \"member\": [\n    \n  ],\n  \"_id\": \"5dc2d57714b81bd6f50ea8aa\",\n  \"name\": \"Marché de Noel de Clos Fleuri\",\n  \"date\": \"2019-11-30\",\n  \"adress\": \"Prilly\",\n  \"time\": \"11h00\",\n  \"description\": \"Venez boire une tasse avec nous et faire vos emplettes pour vos cadeaux de Noël!\",\n  \"public\": true,\n  \"__v\": 0\n}\n    ]",
+          "title": "200 OK",
+          "content": "    HTTP/1.1 200 OK\n    Content-Type: application/json\n    Link: &lt;https://manevent.herokuapp.com/events\n\n    [\n {\n  \"member\": [\n    \n  ],\n  \"_id\": \"5dc2d57714b81bd6f50ea8aa\",\n  \"name\": \"Marché de Noel de Clos Fleuri\",\n  \"date\": \"2019-11-30\",\n  \"adress\": \"Prilly\",\n  \"time\": \"11h00\",\n  \"description\": \"Venez boire une tasse avec nous et faire vos emplettes pour vos cadeaux de Noël!\",\n  \"public\": true,\n  \"__v\": 0\n}\n    ]",
           "type": "json"
         }
       ]

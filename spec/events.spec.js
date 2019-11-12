@@ -2,7 +2,9 @@ const { expect } = require('chai');
 const supertest = require('supertest');
 const app = require('../app');
 const mongoose = require('mongoose');
+const { cleanUpDatabase } = require('./utils');
 
+beforeEach(cleanUpDatabase);
 
 describe('POST /events', function() {
   it('should create a user', async function()  {
@@ -17,7 +19,7 @@ describe('POST /events', function() {
        "public": true,
         "member": []
     })
-    .expect(201)
+    .expect(200)
     .expect('Content-Type', /json/);
   });
 });
