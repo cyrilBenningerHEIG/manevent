@@ -6,6 +6,17 @@ const Event = require('../models/event');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+/* GET all Users. (à contrôler + doc à ajouter) */
+router.get('/', function(req, res, next) {
+
+  User.find().sort('name').exec(function(err, users) {
+    if (err) {
+      return next(err);
+    }
+    res.send(users);
+  });
+});
+
 /** 
  * @api {get} /users/:_id Request an user's informations
  * @apiName RetrieveUser

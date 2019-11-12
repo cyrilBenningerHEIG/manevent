@@ -2,9 +2,9 @@ const { expect } = require('chai');
 const supertest = require('supertest');
 const app = require('../app');
 const mongoose = require('mongoose');
-const { cleanUpDatabase } = require('./utils');
+const { cleanUpEventDatabase } = require('./utils');
 
-beforeEach(cleanUpDatabase);
+beforeEach(cleanUpEventDatabase);
 
 describe('POST /events', function () {
   it('should create a user', async function () {
@@ -18,11 +18,6 @@ describe('POST /events', function () {
         "description": "Just be there",
         "public": true,
         "member": []
-<<<<<<< HEAD
-    })
-    .expect(200)
-    .expect('Content-Type', /json/);
-=======
       })
       .expect(200)
       .expect('Content-Type', /json/);
@@ -35,7 +30,6 @@ describe('POST /events', function () {
     expect(res.body.adress).to.equal('Zone 51');
     expect(res.body.description).to.equal('Just be there');
     expect(res.body).to.have.all.keys('__v', '_id', 'name', 'date', 'adress', 'time', 'description', 'public', 'member');;
->>>>>>> 80eb725e7601326bf0965419645add087b0fa78b
   });
 });
 
