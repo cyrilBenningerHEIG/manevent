@@ -26,7 +26,10 @@ const connection = new autobahn.Connection({
 
 connection.onopen = function(session) {
   console.log('Connection to WAMP router established');
-  session.register(`${namespace}.createMsg`, (args, params) => chat.createNewMsg(1,params));
+  //session.call(`${namespace}.AllMsg`,[],chat.getAllMsg(eventId));
+  session.register(`${namespace}.createMsg`, (args, params) => chat.createNewMsg(session,params));
+  // Subscribe to an event
+  session.subscribe(`${namespace}.AllMsg`,(args,params)=> chat.getAllMsg(params));
   // controleur "created at", "userId", "eventId"
 
 };
