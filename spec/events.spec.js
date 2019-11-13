@@ -45,26 +45,25 @@ describe('GET /events', function () {
 
 describe('PUT /events', function () {
 
+  let event;
   // Create 1 event in the database before each test in this block.
   beforeEach(async function () {
-    await Promise.all([
-      Event.create({ _id: "5dc2d30614b81bd6f50ea8a4", name: "TestEvent", date: "2020-04-16", adress: "Zone 51", time: "00h00", description: "Just be there", public: true, member: [] }),
-    ]);
+     event = await Event.create({name: "TestEvent", date: "2020-04-16", adress: "Zone 51", time: "00h00", description: "Just be there", public: true })
   });
 
   it('should update part of the data of an event', async function () {
     const res = await supertest(app)
-      .put('/events/:id') // attention pas mis à jour 
+      .put('/events/' + event._id) // attention pas mis à jour 
       .send({
-        "name": "Jtm Simon",
+        "name": "TestEventntr",
+        "date": "2020-04-16",
       })
       .expect(200)
       //.expect('Content-Type', /json/);
     const body = res.body;
     expect(res.body).to.be.an('object');
-    expect(res.body.member).to.be.an('array');
     expect(res.body._id).to.be.a('string');
-    expect(res.body.name).to.equal('Jtm Simon');
+    expect(res.body.name).to.equal('TestEventntr');
     expect(res.body.date).to.equal('2020-04-16');
     expect(res.body.adress).to.equal('Zone 51');
     expect(res.body.description).to.equal('Just be there');
@@ -72,12 +71,26 @@ describe('PUT /events', function () {
   });
 });
 
+// describe('/PUT/events/:id', () => {
+//   it('it should UPDATE an event given the id', (done) => {
+//       let event = new Event ({_id: "5dc2d30614b81bd6f50ea8a4", name: "TestEvent", date: "2020-04-16", adress: "Zone 51", time: "00h00", description: "Just be there", public: true, member: [] })
+//       event.save((err, event) => {
+//             chai.request(server)
+//             .put('/book/' + event.id)
+//             .send({name:'TestEvent-ouais'})
+//             .end((err, res) => {
+//                   res.should.have.status(200);
+//                   res.body.should.be.a('object');
+//                   res.event.book.should.have.property('name').eql('TestEvent-ouais');
+//               done();
+//             });
+
 describe('DELETE /events', function () {
 
   // Create 1 event in the database before each test in this block.
   beforeEach(async function () {
     await Promise.all([
-      Event.create({ _id: "5db95c63eccde800179859e9", name: "TestEvent", date: "2020-04-16", adress: "Zone 51", time: "00h00", description: "Just be there", public: true, member: [] }),
+      Event.create({ _id: "5db95c63eccde800179859e9", name: "TestEvent2", date: "2020-04-16", adress: "Zone 51", time: "00h00", description: "Just be there", public: true, member: [] }),
     ]);
   });
 
@@ -86,7 +99,7 @@ describe('DELETE /events', function () {
     // Make a DELETE request on /api/people.
     const res = await supertest(app)
       .delete('/events/:id')
-      // Check that the response is 200 OK with a JSON body.
+      // Check that the response is 200 OK.
       .expect(200)
   });
 });

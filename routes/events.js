@@ -46,6 +46,47 @@ router.get('/', function (req, res, next) {
 
   let query = Event.find().sort('name');
 
+/**
+ *
+ * @api {get} /filter/events?param= Filter events 
+ * @apiName FilterEvents
+ * @apiGroup Event
+ * @apiVersion 1.0.0
+ * @apiDescription Retrieves a paginated list of events matching the filter parameter (in alphabetical order).
+ * @apiUse EventInResponseBody
+ * 
+ * @apiParam {String} [name] name of the event
+ * @apiParam {String} [date] date of the event
+ * @apiParam {String} [adress] adress of the event
+ * @apiParam {String} [time] planned hour of the event
+ * @apiParam {String} [description] description of the event
+ * @apiParam {array} [member] list of the participants of the event
+ * @apiParam {boolean} [public] defines if the event is public or not
+ *  * @apiExample Example
+ *     GET manevent.herokuapp.com/events/filter?adress=Lausanne HTTP/1.1
+ *  * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
+ *     Content-Type: application/json
+ *     Link: &lt;https://manevent.herokuapp.com/events/filter?=Lausanne;;
+ *
+ *     [
+ *{
+ * "member": [
+ *   
+ * ],
+ * "_id": "5dc2d57714b81bd6f50ea8aa",
+ * "name": "Marché de Noel de Clos Fleuri",
+ * "date": "2019-11-30",
+ * "adress": "Prilly",
+ * "time": "11h00",
+ * "description": "Venez boire une tasse avec nous et faire vos emplettes pour vos cadeaux de Noël!",
+ * "public": true,
+ * "__v": 0
+*}
+ *     ]
+ * @apiUse EventNotFoundError
+*/
+
   // Add filter if exist
   /* Filter events by name*/
   if (req.query.name) {
@@ -231,8 +272,7 @@ router.post('/:_id/add', auth, function (req, res, next) {
  * @apiExample Example
  *     PUT manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa HTTP/1.1
  * Content-Type: application/json
- * { "name": "Caprices Festival 2021"
-*}
+ * { "name": "Caprices Festival 2021"}
 * @apiSuccessExample 200 OK
  *     HTTP/1.1 200 OK
  *     Content-Type: application/json
