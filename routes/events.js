@@ -7,13 +7,13 @@ const Event = require('../models/event');
 const mongoose = require('mongoose');
 
 /**
- * DOCUMENTATION API 
+ * DOCUMENTATION API
  * @api {get} /events Request all events' informations
  * @apiName RetrieveEvents
  * @apiGroup Event
  * @apiVersion 1.0.0
  * @apiDescription Retrieves a paginated list of events ordered by title (in alphabetical order).
- * 
+ *
  * @apiParam {Number} [page] page of the event
  * @apiParam {Number} [pageSize] size of the page
  *  * @apiExample Example
@@ -26,7 +26,7 @@ const mongoose = require('mongoose');
  *     [
  {
   "member": [
-    
+
   ],
   "_id": "5dc2d57714b81bd6f50ea8aa",
   "name": "Marché de Noel de Clos Fleuri",
@@ -93,7 +93,7 @@ router.get('/', function (req, res, next) {
 });
 
 
-/** 
+/**
  * @api {get} /events/:_id Request an event's informations
  * @apiName RetrieveEvent
  * @apiGroup Event
@@ -118,7 +118,7 @@ router.get('/', function (req, res, next) {
  *     [
  *{
  * "member": [
- *   
+ *
  * ],
  * "_id": "5dc2d57714b81bd6f50ea8aa",
  * "name": "Marché de Noel de Clos Fleuri",
@@ -146,7 +146,7 @@ router.get('/:_id', function (req, res, next) {
 
 });
 
-/** 
+/**
  * @api {post} /events Create an event
  * @apiName CreateEvent
  * @apiGroup Event
@@ -154,7 +154,7 @@ router.get('/:_id', function (req, res, next) {
  * @apiDescription Registers a new event.
  * @apiUse EventInRequestBody
  * @apiUse EventInResponseBody
- * 
+ *
  * @apiExample Example
  *     POST manevent.herokuapp.com/events HTTP/1.1
  *     Content-Type: application/json
@@ -199,7 +199,7 @@ router.post('/', function (req, res, next) {
   });
 });
 
-router.post('/:_id/add', auth, function (req, res, next) {
+router.post('/:_id/member', auth, function (req, res, next) {
   // If we reach this function, the previous authentication middleware
   // has done its job, i.e. a valid JWT was in the Authorization header.
   const currentUserId = req.currentUserId;
@@ -217,7 +217,7 @@ router.post('/:_id/add', auth, function (req, res, next) {
   });
 });
 
-/** 
+/**
  * @api {put} /event/:_id Update an event's informations
  * @apiName UpdateEvent
  * @apiGroup Event
@@ -269,7 +269,7 @@ router.put('/:_id', function (req, res, next) {
     });
 });
 
-/** 
+/**
  * @api {delete} /events/:_id Delete an event
  * @apiName DeleteEvent
  * @apiGroup Event
@@ -295,12 +295,13 @@ router.delete('/:_id', function (req, res, next) {
       if(checkEmpty(event)) return res.send("The event doesn't exist");
       return res.status(200).send('The event has been deleted');
     });
+// effacer tous les messages
 
 });
 
 function checkID(id) {
     return !mongoose.Types.ObjectId.isValid(id);
-  
+
 }
 function checkEmpty(event) {
  return event === null;
@@ -339,5 +340,3 @@ module.exports = router;
  *
  *     No event found with ID 58b2926f5e1def0123e97281
  */
-
-
