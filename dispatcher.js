@@ -29,7 +29,7 @@ connection.onopen = function(session) {
   //session.call(`${namespace}.AllMsg`,[],chat.getAllMsg(eventId));
   session.register(`${namespace}.createMsg`, (args, params) => chat.createNewMsg(session,params));
   // Subscribe to an event
-  session.subscribe(`${namespace}.AllMsg`,(args,params)=> chat.getAllMsg(params));
+  session.register(`${namespace}.AllMsg`, (args, params) => chat.getAllMsg(params));
   // controleur "created at", "userId", "eventId"
 
 };

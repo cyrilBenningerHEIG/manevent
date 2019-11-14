@@ -30,6 +30,7 @@ const eventSchema = new Schema({
   adress: String,
   time: String,
   description: String,
+  admin:{ type: Schema.Types.ObjectId, ref: 'User' },
   member:[{ type: Schema.Types.ObjectId, ref: 'User' }],
   public: Boolean
 });

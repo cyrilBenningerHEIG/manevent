@@ -14,8 +14,8 @@ class ChatController {
   }
 
 async getAllMsg(params) {
-    //let PreviousMessage = await Message.find({ eventId: "1"}).sort('name').exec();
-    return  params;
+    let PreviousMessage = await Message.find({ eventId: params.eventId}).sort('createdAt').exec();
+    return  PreviousMessage;
   }
 
 }
