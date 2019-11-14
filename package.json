@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon",
     "apidoc": "apidoc -i routes -o docs",
-    "test": "cross-env MONGODB_URI=mongodb://127.0.0.1/my-app-test mocha spec/**/*.spec.js",
+    "test": "cross-env MONGODB_URI=mongodb://127.0.0.1/my-app-test NODE_ENV=test nyc --reporter=html mocha spec/**/*.spec.js",
     "start": "node ./bin/www"
   },
   "dependencies": {
@@ -28,6 +28,7 @@
     "cross-env": "^6.0.3",
     "mocha": "^6.2.2",
     "nodemon": "^1.19.3",
+    "nyc": "^14.1.1",
     "supertest": "^4.0.2"
   }
 }
