@@ -152,6 +152,7 @@ router.post('/', function (req, res, next) {
 /* update User. */
 router.patch('/:_id', auth,function (req, res, next) {
   if(checkID(req.params._id)) return res.status(404).send("This ID is not valid");
+  const currentUserId = req.currentUserId;
   User.findByIdAndUpdate(
     // the id of the item to find
     req.params._id,
@@ -165,6 +166,7 @@ router.patch('/:_id', auth,function (req, res, next) {
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
       if(checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
+      if(Users._id!=currentUserId) return res.status(503).send("You can't update this user");
       return res.send(Users);
     });
 });
@@ -185,7 +187,8 @@ router.patch('/:_id', auth,function (req, res, next) {
  */
 
 /* delete User. */
-router.delete('/:_id', function (req, res, next) {
+router.delete('/:_id',auth, function (req, res, next) {
+  const currentUserId = req.currentUserId;
   if(checkID(req.params._id)) return res.status(404).send("This ID is not valid");
   User.findByIdAndDelete(
     req.params._id,
@@ -193,6 +196,7 @@ router.delete('/:_id', function (req, res, next) {
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
       if(checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
+      if(Users._id!=currentUserId) return res.status(503).send("You can't delete this user");
       return res.status(200).send('The user has been deleted');
     });
 });
