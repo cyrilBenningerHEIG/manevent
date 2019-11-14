@@ -8,9 +8,9 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 /* GET all Users. (à contrôler + doc à ajouter) */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
 
-  User.find().sort('name').exec(function(err, users) {
+  User.find().sort('name').exec(function (err, users) {
     if (err) {
       return next(err);
     }
@@ -38,12 +38,12 @@ router.get('/', function(req, res, next) {
 
 /* GET User listing. */
 router.get('/:_id', function (req, res, next) {
-  if(checkID(req.params._id)) return res.status(404).send("This ID is not valid");
+  if (checkID(req.params._id)) return res.status(404).send("This ID is not valid");
   User.findById(req.params._id).exec(function (err, Users) {
     if (err) {
       return next(err);
     }
-    if(checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
+    if (checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
     Event.aggregate([
       {
         $match: {
@@ -150,9 +150,38 @@ router.post('/', function (req, res, next) {
  */
 
 /* update User. */
-router.patch('/:_id', auth,function (req, res, next) {
-  if(checkID(req.params._id)) return res.status(404).send("This ID is not valid");
+router.patch('/:_id', auth, function (req, res, next) {
+  console.log(req.body.password);
+  if (checkID(req.params._id)) return res.status(404).send("This ID is not valid");
   const currentUserId = req.currentUserId;
+  if (!(req.body.password===undefined)) {
+    const plainPassword = req.body.password;
+    const saltRounds = 10;
+    bcrypt.hash(plainPassword, saltRounds, function (err, hashedPassword) {
+      if (err) {
+        return next(err);
+      }
+      req.body.password=hashedPassword;
+      User.findByIdAndUpdate(
+        // the id of the item to find
+        req.params._id,
+    
+        // the change to be made. Mongoose will smartly combine your existing
+        // document with this change, which allows for partial updates too
+        req.body,
+    
+        // the callback function
+        (err, Users) => {
+          
+          // Handle any possible database errors
+          if (err) return res.status(500).send(err);
+          if (checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
+          if (Users._id != currentUserId) return res.status(503).send("You can't update this user");
+          return res.send(Users);
+        });
+    });
+  }
+  else{
   User.findByIdAndUpdate(
     // the id of the item to find
     req.params._id,
@@ -163,12 +192,15 @@ router.patch('/:_id', auth,function (req, res, next) {
 
     // the callback function
     (err, Users) => {
+
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
-      if(checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
-      if(Users._id!=currentUserId) return res.status(503).send("You can't update this user");
+      if (checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
+      if (Users._id != currentUserId) return res.status(503).send("You can't update this user");
       return res.send(Users);
     });
+  }
+
 });
 
 /** 
@@ -187,16 +219,16 @@ router.patch('/:_id', auth,function (req, res, next) {
  */
 
 /* delete User. */
-router.delete('/:_id',auth, function (req, res, next) {
+router.delete('/:_id', auth, function (req, res, next) {
   const currentUserId = req.currentUserId;
-  if(checkID(req.params._id)) return res.status(404).send("This ID is not valid");
+  if (checkID(req.params._id)) return res.status(404).send("This ID is not valid");
   User.findByIdAndDelete(
     req.params._id,
     (err, Users) => {
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
-      if(checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
-      if(Users._id!=currentUserId) return res.status(503).send("You can't delete this user");
+      if (checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
+      if (Users._id != currentUserId) return res.status(503).send("You can't delete this user");
       return res.status(200).send('The user has been deleted');
     });
 });
@@ -206,7 +238,7 @@ function checkID(id) {
 
 }
 function checkEmpty(event) {
-return event === null;
+  return event === null;
 }
 
 module.exports = router;
