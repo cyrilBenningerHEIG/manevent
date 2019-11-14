@@ -14,7 +14,7 @@ function formatDate(date) {
     return [year, month, day].join('-');
 }
 
-// Define the schema for users
+// Define the schema for events
 const eventSchema = new Schema({
   name: {
     type: String,
