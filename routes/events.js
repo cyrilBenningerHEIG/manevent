@@ -46,46 +46,46 @@ router.get('/', function (req, res, next) {
 
   let query = Event.find().sort('name');
 
-/**
- *
- * @api {get} /filter/events?param= Filter events 
- * @apiName FilterEvents
- * @apiGroup Event
- * @apiVersion 1.0.0
- * @apiDescription Retrieves a paginated list of events matching the filter parameter (in alphabetical order).
- * @apiUse EventInResponseBody
- * 
- * @apiParam {String} [name] name of the event
- * @apiParam {String} [date] date of the event
- * @apiParam {String} [adress] adress of the event
- * @apiParam {String} [time] planned hour of the event
- * @apiParam {String} [description] description of the event
- * @apiParam {array} [member] list of the participants of the event
- * @apiParam {boolean} [public] defines if the event is public or not
- *  * @apiExample Example
- *     GET manevent.herokuapp.com/events/filter?adress=Lausanne HTTP/1.1
- *  * @apiSuccessExample 200 OK
- *     HTTP/1.1 200 OK
- *     Content-Type: application/json
- *     Link: &lt;https://manevent.herokuapp.com/events/filter?=Lausanne;;
- *
- *     [
- *{
- * "member": [
- *   
- * ],
- * "_id": "5dc2d57714b81bd6f50ea8aa",
- * "name": "Marché de Noel de Clos Fleuri",
- * "date": "2019-11-30",
- * "adress": "Prilly",
- * "time": "11h00",
- * "description": "Venez boire une tasse avec nous et faire vos emplettes pour vos cadeaux de Noël!",
- * "public": true,
- * "__v": 0
-*}
- *     ]
- * @apiUse EventNotFoundError
-*/
+  /**
+   *
+   * @api {get} /filter/events?param= Filter events 
+   * @apiName FilterEvents
+   * @apiGroup Event
+   * @apiVersion 1.0.0
+   * @apiDescription Retrieves a paginated list of events matching the filter parameter (in alphabetical order).
+   * @apiUse EventInResponseBody
+   * 
+   * @apiParam {String} [name] name of the event
+   * @apiParam {String} [date] date of the event
+   * @apiParam {String} [adress] adress of the event
+   * @apiParam {String} [time] planned hour of the event
+   * @apiParam {String} [description] description of the event
+   * @apiParam {array} [member] list of the participants of the event
+   * @apiParam {boolean} [public] defines if the event is public or not
+   *  * @apiExample Example
+   *     GET manevent.herokuapp.com/events/filter?adress=Lausanne HTTP/1.1
+   *  * @apiSuccessExample 200 OK
+   *     HTTP/1.1 200 OK
+   *     Content-Type: application/json
+   *     Link: &lt;https://manevent.herokuapp.com/events/filter?=Lausanne;;
+   *
+   *     [
+   *{
+   * "member": [
+   *   
+   * ],
+   * "_id": "5dc2d57714b81bd6f50ea8aa",
+   * "name": "Marché de Noel de Clos Fleuri",
+   * "date": "2019-11-30",
+   * "adress": "Prilly",
+   * "time": "11h00",
+   * "description": "Venez boire une tasse avec nous et faire vos emplettes pour vos cadeaux de Noël!",
+   * "public": true,
+   * "__v": 0
+  *}
+   *     ]
+   * @apiUse EventNotFoundError
+  */
 
   // Add filter if exist
   /* Filter events by name*/
@@ -176,12 +176,12 @@ router.get('/', function (req, res, next) {
 
 /* GET event listing. */
 router.get('/:_id', function (req, res, next) {
-  if(checkID(req.params._id)) return res.send("This ID is not valid");
+  if (checkID(req.params._id)) return res.status(404).send("This ID is not valid");
   Event.findById(req.params._id).exec(function (err, events) {
     if (err) {
       return next(err);
     }
-    if(checkEmpty(events)) return res.send("The event doesn't exist");
+    if (checkEmpty(events)) return res.status(404).send("The event doesn't exist");
     res.send(events);
   });
 
@@ -227,9 +227,11 @@ router.get('/:_id', function (req, res, next) {
  */
 
 /* post a new event. */
-router.post('/', function (req, res, next) {
+router.post('/', auth, function (req, res, next) {
+  const currentUserId = req.currentUserId;
   // Create a new document from the JSON in the request body
-  const newEvent = new Event(req.body);
+  let newEvent = new Event(req.body);
+  newEvent.admin = currentUserId;
   // Save that document
   newEvent.save(function (err, savedEvent) {
     if (err) {
@@ -244,9 +246,9 @@ router.post('/:_id/member', auth, function (req, res, next) {
   // If we reach this function, the previous authentication middleware
   // has done its job, i.e. a valid JWT was in the Authorization header.
   const currentUserId = req.currentUserId;
-  if(checkID(req.params._id)) return res.send("This ID is not valid");
+  if (checkID(req.params._id)) return res.status(404).send("This ID is not valid");
   Event.findById(req.params._id, function (err, event) {
-    if(checkEmpty(event)) return res.send("The event doesn't exist");
+    if (checkEmpty(event)) return res.status(404).send("The event doesn't exist");
     event.member.push(currentUserId);
     event.save(function (err, savedEvent) {
       if (err) {
@@ -290,8 +292,10 @@ router.post('/:_id/member', auth, function (req, res, next) {
  */
 
 /* update event. */
-router.put('/:_id', function (req, res, next) {
-  if(checkID(req.params._id)) return res.send("This ID is not valid");
+router.patch('/:_id', auth,function (req, res, next) {
+  if (checkID(req.params._id)) return res.status(404).send("This ID is not valid");
+  const currentUserId = req.currentUserId;
+  //if (checkEmpty(currentUserId)) return res.status(403).send();
   Event.findByIdAndUpdate(
     // the id of the item to find
     req.params._id,
@@ -304,8 +308,10 @@ router.put('/:_id', function (req, res, next) {
     (err, event) => {
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
-      if(checkEmpty(event)) return res.send("The event doesn't exist");
-      return res.send(event);
+      if (checkEmpty(event)) return res.status(404).send("The event doesn't exist");
+
+      if(event.admin!=currentUserId) return res.status(503).send("Only admin user can update");
+      return res.status(200).send("The event has been updated");
     });
 });
 
@@ -325,26 +331,28 @@ router.put('/:_id', function (req, res, next) {
  */
 
 /* delete event */
-router.delete('/:_id', function (req, res, next) {
-  if(checkID(req.params._id)) return res.send("This ID is not valid");
+router.delete('/:_id',auth, function (req, res, next) {
+  const currentUserId = req.currentUserId;
+  if (checkID(req.params._id)) return res.status(404).send("This ID is not valid");
   Event.findByIdAndDelete(
     req.params._id,
     (err, event) => {
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
-      if(checkEmpty(event)) return res.send("The event doesn't exist");
+      if (checkEmpty(event)) return res.status(404).send("The event doesn't exist");
+      if(event.admin!=currentUserId) return res.status(503).send("Only admin user can update");
       return res.status(200).send('The event has been deleted');
     });
-// effacer tous les messages
+  // effacer tous les messages
 
 });
 
 function checkID(id) {
-    return !mongoose.Types.ObjectId.isValid(id);
+  return !mongoose.Types.ObjectId.isValid(id);
 
 }
 function checkEmpty(event) {
- return event === null;
+  return event === null;
 }
 
 module.exports = router;

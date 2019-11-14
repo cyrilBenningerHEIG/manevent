@@ -1,6 +1,7 @@
 //jshint esversion:6
 var express = require('express');
 var router = express.Router();
+const auth = require("../middleware/auth");
 const User = require('../models/user');
 const Event = require('../models/event');
 const mongoose = require('mongoose');
@@ -37,12 +38,12 @@ router.get('/', function(req, res, next) {
 
 /* GET User listing. */
 router.get('/:_id', function (req, res, next) {
-  if(checkID(req.params._id)) return res.send("This ID is not valid");
+  if(checkID(req.params._id)) return res.status(404).send("This ID is not valid");
   User.findById(req.params._id).exec(function (err, Users) {
     if (err) {
       return next(err);
     }
-    if(checkEmpty(Users)) return res.send("The event doesn't exist");
+    if(checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
     Event.aggregate([
       {
         $match: {
@@ -149,8 +150,8 @@ router.post('/', function (req, res, next) {
  */
 
 /* update User. */
-router.put('/:_id', function (req, res, next) {
-  if(checkID(req.params._id)) return res.send("This ID is not valid");
+router.patch('/:_id', auth,function (req, res, next) {
+  if(checkID(req.params._id)) return res.status(404).send("This ID is not valid");
   User.findByIdAndUpdate(
     // the id of the item to find
     req.params._id,
@@ -163,7 +164,7 @@ router.put('/:_id', function (req, res, next) {
     (err, Users) => {
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
-      if(checkEmpty(Users)) return res.send("The event doesn't exist");
+      if(checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
       return res.send(Users);
     });
 });
@@ -185,13 +186,13 @@ router.put('/:_id', function (req, res, next) {
 
 /* delete User. */
 router.delete('/:_id', function (req, res, next) {
-  if(checkID(req.params._id)) return res.send("This ID is not valid");
+  if(checkID(req.params._id)) return res.status(404).send("This ID is not valid");
   User.findByIdAndDelete(
     req.params._id,
     (err, Users) => {
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
-      if(checkEmpty(Users)) return res.send("The user doesn't exist");
+      if(checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
       return res.status(200).send('The user has been deleted');
     });
 });
