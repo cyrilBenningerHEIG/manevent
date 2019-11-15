@@ -33,7 +33,7 @@ describe('GET /users', function() {
 
   it('should retrieve a list of users', async function() {
 
-    // Make a GET request on /api/people.
+    // Make a GET request on /manevent/users
     const res = await supertest(app)
       .get('/users')
       // Check that the response is 200 OK with a JSON body.
@@ -73,7 +73,7 @@ describe('DELETE /users', function() {
 
   it('should delete a user', async function() {
 
-    // Make a DELETE request on /api/people.
+    // Make a DELETE request on manevent/users/_id.
     const res = await supertest(app)
       .delete('/users/:id')
       // Check that the response is 200 OK with a JSON body.
