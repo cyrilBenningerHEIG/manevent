@@ -120,7 +120,7 @@ router.post('/', function (req, res, next) {
 });
 
 /** 
- * @api {put} /event/:_id Update an user's informations
+ * @api {patch} /event/:_id Update an user's informations
  * @apiName UpdateUser
  * @apiGroup User
  * @apiVersion 1.0.0
