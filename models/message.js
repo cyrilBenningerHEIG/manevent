@@ -6,7 +6,7 @@ const Event = require('./event');
 const MsgSchema = new Schema({
     text: String,
     image: String,
-    /*location: {
+    location: {
         type: {
             type: String,
             required: true,
@@ -20,13 +20,13 @@ const MsgSchema = new Schema({
                 message: '{VALUE} is not a valid longitude/latitude(/altitude) coordinates array'
             }
         }
-    },*/
-    //user:{ type: Schema.Types.ObjectId, ref: 'User' },
-    //event:{ type: Schema.Types.ObjectId, ref: 'Event' },
-    //createdAt: new Date()
+    },
+    user:{ type: Schema.Types.ObjectId, ref: 'User' },
+    event:{ type: Schema.Types.ObjectId, ref: 'Event' },
+    createdAt: new Date()
 });
 // Create a geospatial index on the location property.
-//geolocatedSchema.index({ location: '2dsphere' });
+geolocatedSchema.index({ location: '2dsphere' });
 
 // Validate a GeoJSON coordinates array (longitude, latitude and optional altitude).
 function validateGeoJsonCoordinates(value) {

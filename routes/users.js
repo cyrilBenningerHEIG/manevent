@@ -248,6 +248,13 @@ router.patch('/:_id', auth, function (req, res, next) {
         return res.send(Users);
       });
   }
+  Event.findById(req.params._id).exec(function (err, Users) {
+    if (err) {
+      return next(err);
+    }
+    
+    res.send(Users);
+  });
 
 });
 
