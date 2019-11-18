@@ -19,7 +19,7 @@ npm install
 npm start
 ```
 
-The application started at the PORT:3000 of your localhost server : [http://localhost:3000](http://localhost:3000).
+The application started at the PORT:3000 of your local server : [http://localhost:3000](http://localhost:3000).
 
 If you are a developer and you have an intention to change the code you should run the application in a developer mode. We are using a [Nodemon](https://nodemon.io/) utility for that. Use `npm run dev`  instead of `npm start` to watch for file changes and restart the server automatically.
 
