@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 const supertest = require('supertest');
 const app = require('../app');
+const auth = require("../middleware/auth");
 const Event = require('../models/event');
 const User = require('../models/user');
 const mongoose = require('mongoose');
@@ -9,24 +10,26 @@ const { cleanUpEventDatabase } = require('./utils');
 beforeEach(cleanUpEventDatabase);
 
 describe('POST /events', function () {
-  let token;
+  
   // Create 1 event in the database before each test in this block.
-  beforeEach(async function () {
+  before(async function () {
+    let token
     await Promise.all([
     User.create({ name: 'Tiesto Testa', email: 'test2@heig-vd.ch', password: 'test2' }),
-    res = supertest(app).post('/login').send({ "name": 'Tiesto Testa', "password": 'test2' }),
-    token=res.token
-    ])
+    result = supertest(app).post('/login').send({ "name": 'Tiesto Testa', "password": 'test2' }),
+    token=result.token
+    ]);
+    
   });
-  it('should not be able to post an event if no token was sent', function() {
+  /*it('should not be able to post an event if no token was sent', function() {
     supertest(app)
       .post('/events')
       .expect(401);
-  });
+  });*/
   it('should create a event', async function () {
     const res = await supertest(app)
       .post('/events')
-      .set('Authorization', 'Bearer ' + token)
+      .set('Authorization', 'Bearer ' + result.token)
       .send({
         "name": "TestEvent",
         "date": "2020-04-16",

@@ -228,7 +228,7 @@ router.delete('/:_id', auth, function (req, res, next) {
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
       if (checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
-      if (Users._id != currentUserId) return res.status(503).send("You can't delete this user");
+      if (Users._id != currentUserId) return res.status(403).send("You can't delete this user");
       return res.status(200).send('The user has been deleted');
     });
 });
