@@ -7,6 +7,37 @@ Manevent is a simple application written on [Node.js](https://nodejs.org/) with 
 
 The documentation of the 1st and the 2nd points can be found in the `/docs` folder of our application. The 3rd point is explained below.  
 
+# API Manevent 
+
+Manevent is a simple application written on [Node.js](https://nodejs.org/) with the use of [Express.js](https://expressjs.com/) framework based on [Mongo DB](https://www.mongodb.com/) which allows the following set of interactions : 
+
+1. to add / modify / delete an event  
+2. to add / modify / detele a user 
+3. a real-time communication by an event between subscribed users 
+
+## Requirements
+
+* [Node.js][node] 12.x
+* [MongoDB][mongo] 4.x
+
+## Usage
+
+```bash
+git clone https://github.com/cyrilBenningerHEIG/manevent.git
+npm install
+npm start
+```
+
+The application started at the PORT:300 of your localhost server : [http://localhost:3000](http://localhost:3000).
+
+If you are a developer and you have an intention to change the code you should run the application in a developer mode. We are using a [Nodemon](https://nodemon.io/) utility for that. Use `npm run dev`  instead of `npm start` to watch for file changes and restart the server automatically.
+
+## Documentation
+
+The documentation can be found in the `/docs` folder of our application. 
+
+## Real-time component 
+
 We are using the [WAMP (Web Application Messaging Protocol)](https://en.wikipedia.org/wiki/Web_Application_Messaging_Protocol) to provide our users with a real-time communication by event. The chat is automatically activated at the moment of the creation of a new event so the subscribers can exchange messages. The events can have a **public** or a **private** status. In the case of a public event all the messages sent to the chat are visible for non authenticated users. When the event is private, the users can only see the basic information of an event, such as  
  its name, date, start time, location and the description. To join the chat, the user have to be authenticated. 
  
@@ -62,3 +93,8 @@ const MsgSchema = new Schema({
     createdAt: new Date()
 })
 ```
+
+[express]: https://expressjs.com
+[mongo]: https://www.mongodb.com
+[node]: https://nodejs.org/
+
