@@ -199,14 +199,6 @@ router.patch('/:_id', auth, function (req, res, next) {
         if (Users._id != currentUserId) return res.status(503).send("You can't update this user");
       });
   }
-  Event.findById(req.params._id).exec(function (err, Users) {
-    if (err) {
-      return next(err);
-    }
-    
-    res.send(Users);
-  });
-
 });
 
 /** 
