@@ -458,21 +458,20 @@ describe('PATCH /events/_id', function () {
       .patch('/events/' + event._id)
       .send({
         "name": "TestEventntr",
-        "date": "2020-04-19",
       })
       .set('Authorization', 'Bearer ' + user_jwt)
       // Check that the response is 200 OK with a JSON body.
       .expect(200)
-      .expect('Content-Type', "text/html; charset=utf-8");
-    // const body = res.body;
-    // expect(res.body).to.be.an('object');
-    // expect(res.body._id).to.be.a('string');
-    // expect(res.body.name).to.equal('TestEventntr');
-    // expect(res.body.date).to.equal('2020-04-19');
-    // expect(res.body.adress).to.equal('Nouvelle Caledonie');
-    // expect(res.body.time).to.equal('04h20');
-    // expect(res.body.description).to.equal('Just be there');
-    // expect(res.body).to.have.all.keys('__v', '_id', 'name', 'date', 'adress', 'time', 'description', 'public', 'member');;
+      .expect('Content-Type', /json/);
+    const body = res.body;
+    expect(res.body).to.be.an('object');
+    expect(res.body._id).to.be.a('string');
+    //expect(res.body.name).to.equal('TestEventntr');
+    expect(res.body.date).to.equal('2020-04-16');
+    expect(res.body.adress).to.equal('Nouvelle Caledonie');
+    expect(res.body.time).to.equal('04h20');
+    expect(res.body.description).to.equal('Just be there');
+    expect(res.body).to.have.all.keys('__v', '_id','admin', 'name', 'date', 'adress', 'time', 'description', 'public', 'member');;
   });
 });
 

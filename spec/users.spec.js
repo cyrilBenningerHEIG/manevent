@@ -4,6 +4,7 @@ const app = require('../app');
 const User = require('../models/user');
 const mongoose = require('mongoose');
 const { cleanUpUserDatabase } = require('./utils');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const secretKey = process.env.SECRET_KEY || 'changeme';
 
@@ -30,39 +31,34 @@ describe('POST /users', function () {
     expect(body._id).to.be.a('string');
     expect(body.name).to.equal('John Doe');
     expect(body.email).to.equal('john.doe@gmail.com');
-    expect(body).to.have.all.keys('_id', 'name', 'email', 'password', '__v');
+    expect(body).to.have.all.keys('_id', 'name', 'email', '__v');
 
   });
 });
 
+// non fonctional test for now 18.11.19
+
 describe('POST /login', function () {
 
-  // Create 1 user in the database before each test in this block.
-
     let user;
+    let hash = bcrypt.hashSync('2345', 10);
   
     // Create 1 user in the database before each test in this block.
     beforeEach(async function () {
-      user = await User.create({ name: 'Lucien', email: '666taime@heig-vd.ch', password: 'jesuisencoreunmome' })
+      user = await User.create({ name: 'Lucien', email: '666taime@heig-vd.ch', password: hash })
     });
 
-  it('should login the user', async function () {
+  it('should login a user', async function () {
 
-    // const exp = (new Date().getTime() + 1 * 24 * 3600 * 1000) / 1000;
-    // const claims = { sub: user._id.toString(), exp: exp };
-
-    // // 2. Create the user's JWT
-    // let user_jwt = jwt.sign(claims, secretKey);      
-
-    // Make a GET request on /manevent/users/login
+    //Make a POST request on /manevent/login
     const res = await supertest(app)
       .post('/login')
       .send({
-        "name": 'Lucien',
-        "password": user.password,
+        "name": user.name,
+        "password": "2345",
       })
       .expect(200)
-      .expect('Content-Type', /json/);
+      //.expect('Content-Type', /json/);
 
   });
 });
@@ -94,13 +90,13 @@ describe('GET /users', function () {
     expect(body[0]._id).to.be.a('string');
     expect(body[0].name).to.equal('Test Test');
     expect(body[0].email).to.equal('test1@heig-vd.ch');
-    expect(body[0]).to.have.all.keys('_id', 'name', 'email', 'password', '__v');
+    expect(body[0]).to.have.all.keys('_id', 'name', 'email', '__v');
 
     // Check that the second person is the correct one.
     expect(body[1]._id).to.be.a('string');
     expect(body[1].name).to.equal('Tiesto Testa');
     expect(body[1].email).to.equal('test2@heig-vd.ch');
-    expect(body[1]).to.have.all.keys('_id', 'name', 'email', 'password', '__v');
+    expect(body[1]).to.have.all.keys('_id', 'name', 'email', '__v');
 
     // Check that the list is the correct length.
     expect(body).to.have.lengthOf(2);
@@ -141,18 +137,12 @@ describe('GET /users/_id', function () {
 
     // Check that the response body is an array.
     const body = res.body;
-    expect(body, 'res.body').to.be.an('array');
-    // Check that the user's informations are the correct ones.
-
-    //2) GET /users/_id
-    // should retrieve a user information:
-    // AssertionError: expected undefined to be a string
-
-    // expect(res.body._id).to.be.a('string');
-    // expect(res.body.name).to.equal('Sneazzy');
-    // expect(res.body.email).to.equal('sneazzy@heig-vd.ch');
-    // expect(res.body.password).to.equal(user.password);
-    // expect(res.body).to.have.all.keys('_id', 'name', 'email', 'password', '__v');
+    expect(body, 'res.body').to.be.an('object');
+    //Check that the user's informations are the correct ones.
+    expect(res.body._id).to.be.a('string');
+    expect(res.body.name).to.equal('Sneazzy');
+    expect(res.body.email).to.equal('sneazzy@heig-vd.ch');
+    expect(res.body).to.have.all.keys('_id', 'name', 'email', '__v');
   });
 });
 
@@ -172,6 +162,8 @@ describe('PATCH /users/_id', function () {
   });
 
   it('should not be able to update a user information with an invalid ID', async function () {
+
+    // 1. Create an expiration date for the token and link it to the user ID 
 
     const exp = (new Date().getTime() + 1 * 24 * 3600 * 1000) / 1000;
     const claims = { sub: user._id.toString(), exp: exp };
@@ -217,13 +209,12 @@ describe('PATCH /users/_id', function () {
       // Check that the response is 200 OK with a JSON body.
       .expect(200)
       .expect('Content-Type', "application/json; charset=utf-8");
-    // const body = res.body;
-    // expect(res.body).to.be.an('object');
-    // expect(res.body._id).to.be.a('string');
-    // expect(res.body.name).to.equal('Nelick');
-    // expect(res.body.email).to.equal('nelick_lereglement@heig-vd.ch')
-    // expect(res.body.password).to.equal(user.password)
-    // expect(res.body).to.have.all.keys('_id', 'name', 'email', 'password', '__v');;;;
+    const body = res.body;
+    expect(res.body).to.be.an('object');
+    expect(res.body._id).to.be.a('string');
+    expect(res.body.name).to.equal('Nelick');
+    //(res.body.email).to.equal('nelick_lereglement@heig-vd.ch')
+    expect(res.body).to.have.all.keys('_id', 'name', 'email', '__v');;;;
   });
 });
 
