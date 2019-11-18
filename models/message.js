@@ -23,7 +23,7 @@ const MsgSchema = new Schema({
     },
     user:{ type: Schema.Types.ObjectId, ref: 'User' },
     event:{ type: Schema.Types.ObjectId, ref: 'Event' },
-    //createdAt: new Date()
+    createdAt: new Date()
 });
 // Create a geospatial index on the location property.
 geolocatedSchema.index({ location: '2dsphere' });
