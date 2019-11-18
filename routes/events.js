@@ -14,16 +14,27 @@ const mongoose = require('mongoose');
  * @apiVersion 1.0.0
  * @apiDescription Retrieves a paginated list of events ordered by title (in alphabetical order).
  *
- * @apiParam {Number} [page] page of the event
- * @apiParam {Number} [pageSize] size of the page
  *  * @apiExample Example
  *     GET manevent.herokuapp.com/events HTTP/1.1
  * @apiSuccessExample 200 OK
  *     HTTP/1.1 200 OK
  *     Content-Type: application/json
- *     Link: &lt;https://manevent.herokuapp.com/events
+ *     Location: https://manevent.herokuapp.com/events
  *
  *     [
+ {
+  "member": [
+  
+  ],
+  "_id": "5dc2d57714b81bd6f50ea8aa",
+  "name": "Code la fin API",
+  "date": "2019-11-18",
+  "adress": "Yverdon",
+  "time": "22h10",
+  "description": "",
+  "public": true,
+  "__v": 0
+}
  {
   "member": [
 
@@ -39,6 +50,7 @@ const mongoose = require('mongoose');
 }
  *     ]
  *
+ * @apiUse ServerError
  */
 
 /* GET events listing. */
@@ -58,16 +70,13 @@ router.get('/', function (req, res, next) {
    * @apiParam {String} [name] name of the event
    * @apiParam {String} [date] date of the event
    * @apiParam {String} [adress] adress of the event
-   * @apiParam {String} [time] planned hour of the event
-   * @apiParam {String} [description] description of the event
-   * @apiParam {array} [member] list of the participants of the event
    * @apiParam {boolean} [public] defines if the event is public or not
    *  * @apiExample Example
    *     GET manevent.herokuapp.com/events/filter?adress=Lausanne HTTP/1.1
    *  * @apiSuccessExample 200 OK
    *     HTTP/1.1 200 OK
    *     Content-Type: application/json
-   *     Link: &lt;https://manevent.herokuapp.com/events/filter?=Lausanne;;
+   *     Location: https://manevent.herokuapp.com/events/filter?=Lausanne;;
    *
    *     [
    *{
@@ -77,14 +86,29 @@ router.get('/', function (req, res, next) {
    * "_id": "5dc2d57714b81bd6f50ea8aa",
    * "name": "Marché de Noel de Clos Fleuri",
    * "date": "2019-11-30",
-   * "adress": "Prilly",
+   * "adress": "Lausanne",
    * "time": "11h00",
    * "description": "Venez boire une tasse avec nous et faire vos emplettes pour vos cadeaux de Noël!",
    * "public": true,
    * "__v": 0
   *}
+
+    *     [
+   *{
+   * "member": [
+   *   
+   * ],
+   * "_id": "5dc2d57714b81bd6f50ea8aa",
+   * "name": "Boogie Dance",
+   * "date": "2019-10-30",
+   * "adress": "Lausanne",
+   * "time": "21h00",
+   * "description": "Boogie Wonderland!",
+   * "public": true,
+   * "__v": 0
+  *}
    *     ]
-   * @apiUse EventNotFoundError
+   * @apiUse ServerError
   */
 
   // Add filter if exist
@@ -141,20 +165,12 @@ router.get('/', function (req, res, next) {
  * @apiVersion 1.0.0
  * @apiDescription Retrieves one event.
  *
- * @apiParam {Number} _id Unique identifier of the event
- * @apiParam (Request body) {String} [name] name of the event
- * @apiParam (Request body) {String} [date] date of the event
- * @apiParam (Request body) {String} [adress] adress of the event
- * @apiParam (Request body) {String} [time] planned hour of the event
- * @apiParam (Request body) {String} [description] description of the event
- * @apiParam (Request body) {array} [member] list of the participants of the event
- * @apiParam (Request body) {boolean} [public] defines if the event is public or not
+ * @apiUse EventIdInUrlPath
  * @apiExample Example
  *     GET manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa HTTP/1.1
  * @apiSuccessExample 200 OK
  *     HTTP/1.1 200 OK
  *     Content-Type: application/json
- *     Link: &lt;https://manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa;;
  *
  *     [
  *{
@@ -172,6 +188,8 @@ router.get('/', function (req, res, next) {
 *}
  *     ]
  * @apiUse EventNotFoundError
+ * @apiUse EventIdNotValid
+ * @apiUse ServerError
  */
 
 /* GET event listing. */
@@ -204,15 +222,14 @@ router.get('/:_id', function (req, res, next) {
  *           "date": "2020-04-16",
 *          "adress": "Crans-Montana",
 *           "time": "19h00",
- *           "description": "Caprices Festival is a four-day festival that takes place in Crans-Montana, Switzerland, on three different stages",
+ *           "description": "Caprices Festival is a four-day festival that takes place in Crans-Montana, Switzerland",
   *          "public": true,
-            "member": []
+*            "member": []
 *}
  *
- * @apiSuccessExample 201 Created
- *     HTTP/1.1 201 Created
+ * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200 OK
  *     Content-Type: application/json
- *     Location: https://evening-meadow-25867.herokuapp.com/api/movies/58b2926f5e1def0123e97281
 *{
 *    "member": [],
 *    "_id": "5dc3f1ed87ca9ddf9882f5b3",
@@ -220,7 +237,7 @@ router.get('/:_id', function (req, res, next) {
 *    "date": "2020-04-16",
 *    "adress": "Crans-Montana",
 *    "time": "19h00",
-*    "description": "Caprices Festival is a four-day festival that takes place in Crans-Montana, Switzerland, on three different stages",
+*    "description": "Caprices Festival is a four-day festival that takes place in Crans-Montana, Switzerland",
 *    "public": true,
 *    "__v": 0
 *}
@@ -261,20 +278,22 @@ router.post('/:_id/member', auth, function (req, res, next) {
 });
 
 /**
- * @api {put} /event/:_id Update an event's informations
+ * @api {patch} /event/:_id Update an event's informations
  * @apiName UpdateEvent
  * @apiGroup Event
  * @apiVersion 1.0.0
  * @apiDescription Partially updates an event's data (only the properties found in the request body will be updated).
  * All properties are optional.
  *
- * @apiParam {Number} _id Unique identifier of the event
+ * @apiUse EventIdInUrlPath
  * @apiUse EventInRequestBody
  * @apiUse EventInResponseBody
  * @apiExample Example
- *     PUT manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa HTTP/1.1
+ *     PATCH manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa HTTP/1.1
  * Content-Type: application/json
- * { "name": "Caprices Festival 2021"}
+ * { 
+ * "name": "Caprices Festival 2021"
+ * }
 * @apiSuccessExample 200 OK
  *     HTTP/1.1 200 OK
  *     Content-Type: application/json
@@ -285,10 +304,21 @@ router.post('/:_id/member', auth, function (req, res, next) {
 *    "date": "2020-04-16",
 *    "adress": "Crans-Montana",
 *    "time": "19h00",
-*    "description": "Caprices Festival is a four-day festival that takes place in Crans-Montana, Switzerland, on three different stages",
+*    "description": "Caprices Festival is a four-day festival that takes place in Crans-Montana, Switzerland",
 *    "public": true,
 *    "__v": 0
 *}
+ * @apiError {Object} 403/Unauthorized The user is not allowed to update an event
+ *
+ * @apiErrorExample {json} 403 Unauthorized
+ *     HTTP/1.1 403 Unauthorized
+ *     Content-Type: text/plain
+ *
+ *     "Only admin user can update" 
+ * 
+ * @apiUse EventIdNotValid
+ * @apiUse EventNotFoundError
+ * @apiUse ServerError
  */
 
 /* update event. */
@@ -325,9 +355,20 @@ router.patch('/:_id', auth,function (req, res, next) {
  * @apiParam (URL path parameters) {Number} _id The unique identifier of the event to retrieve
  * @apiExample Example
  *     DELETE manevent.herokuapp.com/events/5dc2d57714b81bd6f50ea8aa HTTP/1.1
- * @apiSuccessExample 200 OK
- *     HTTP/1.1 200 The event has been deleted
+  * @apiSuccessExample 200 OK
+ *     HTTP/1.1 200
+ *     Content-Type: text/plain 
+ * 
+ *     "The event has been deleted"
+ *  @apiError {Object} 403/Unauthorized The user is not allowed to delete an event
+ *  @apiErrorExample {json} 403 Unauthorized
+ *     HTTP/1.1 403 Unauthorized
+ *     Content-Type: text/plain
+ *
+ *     "Only admin user can delete an event" 
+ * @apiUse EventIdNotValid
  * @apiUse EventNotFoundError
+ * @apiUse ServerError
  */
 
 /* delete event */
@@ -340,7 +381,7 @@ router.delete('/:_id',auth, function (req, res, next) {
       // Handle any possible database errors
       if (err) return res.status(500).send(err);
       if (checkEmpty(event)) return res.status(404).send("The event doesn't exist");
-      if(event.admin!=currentUserId) return res.status(503).send("Only admin user can update");
+      if(event.admin!=currentUserId) return res.status(503).send("Only admin user can delete an event");
       return res.status(200).send('The event has been deleted');
     });
   // effacer tous les messages
@@ -376,15 +417,32 @@ module.exports = router;
  * @apiParam (Response body) {String} description description of the event
  * @apiParam (Response body) {array} member list of the participants of the event
  * @apiParam (Response body) {boolean} public defines if the event is public or not
+ * @apiParam (Response body) {Number} __v The versionKey is a property set on each document when first created by Mongoose
  */
 /**
- * @apiDefine EventNotFoundError
- *
- * @apiError {Object} 404/NotFound No event was found corresponding to the ID in the URL path
- *
- * @apiErrorExample {json} 404 Not Found
- *     HTTP/1.1 404 Not Found
- *     Content-Type: text/plain
- *
- *     No event found with ID 58b2926f5e1def0123e97281
- */
+* @apiDefine EventIdInUrlPath
+* @apiParam (URL path parameters) {Number} _id The unique identifier of the event to retrieve
+*/
+/**
+* @apiDefine EventNotFoundError
+* @apiError {Object} 404/NotFound No event found with that ID
+* @apiErrorExample {json} 404 Not Found
+*     HTTP/1.1 404 Not Found
+*     Content-Type: text/plain
+*
+*     "The event doesn't exist"
+*/
+/**
+* @apiDefine EventIdNotValid
+* @apiError {Object} 404/InvalidID Event ID is not valid
+* @apiErrorExample {json} 404 Invalid ID
+*     HTTP/1.1 404 Invalid ID
+*     Content-Type: text/plain
+*
+*     "This ID is not valid"
+*/
+/**
+* @apiDefine ServerError
+* @apiError {Object} 500/InternalServerError Server unable to answer
+*
+*/

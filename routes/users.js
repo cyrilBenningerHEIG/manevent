@@ -12,7 +12,7 @@ const bcrypt = require('bcrypt');
  * @apiName RetrieveUsers
  * @apiGroup User
  * @apiVersion 1.0.0
- * @apiDescription Retrieves all users information.
+ * @apiDescription Retrieves a paginated list of users ordered by name (in alphabetical order).
  *
  * @apiExample Example
  *     GET manevent.herokuapp.com/users HTTP/1.1
