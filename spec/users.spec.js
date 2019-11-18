@@ -35,31 +35,31 @@ describe('POST /users', function () {
   });
 });
 
-describe('GET /login', function () {
+// describe('POST /login', function () {
 
-  // Create 2 people in the database before each test in this block.
-  beforeEach(async function () {
-    await Promise.all([
-      User.create({ name: 'Lucien', email: '666taime@heig-vd.ch', password: 'jesuisencoreunmome' }),
-      User.create({ name: 'Tiesto Testa', email: 'test2@heig-vd.ch', password: 'test2' })
-    ]);
-  });
+//   // Create 2 people in the database before each test in this block.
+//   beforeEach(async function () {
+//     await Promise.all([
+//       User.create({ name: 'Lucien', email: '666taime@heig-vd.ch', password: 'jesuisencoreunmome' }),
+//       User.create({ name: 'Tiesto Testa', email: 'test2@heig-vd.ch', password: 'test2' })
+//     ]);
+//   });
 
-  it('should login the user', async function () {
+//   it('should login the user', async function () {
 
-    // Make a GET request on /manevent/users/login
-    const res = await supertest(app)
-      .post('/users')
-      .send({
-        "name": 'Lucien',
-        "email": "666taime@gmail.com",
-        "password": 'jesuisencoreunmome'
-      })
-      .expect(200)
-      .expect('Content-Type', /json/);
+//     // Make a GET request on /manevent/users/login
+//     const res = await supertest(app)
+//       .post('/login')
+//       .send({
+//         "name": 'Lucien',
+//         "email": "666taime@gmail.com",
+//         "password": 'jesuisencoreunmome'
+//       })
+//       .expect(200)
+//       .expect('Content-Type', /json/);
 
-  });
-});
+//   });
+// });
 
 describe('GET /users', function () {
 
