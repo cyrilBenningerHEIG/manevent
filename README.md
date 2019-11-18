@@ -1,12 +1,3 @@
-# Manevent API
-Manevent is a simple application written on [Node.js](https://nodejs.org/) with the use of [Express.js](https://expressjs.com/) framework based on [Mongo DB](https://www.mongodb.com/) which allows the following set of interactions : 
-
-1. to add / modify / delete an event  
-2. to add / modify / detele a user 
-3. a real-time communication by an event between subscribed users 
-
-The documentation of the 1st and the 2nd points can be found in the `/docs` folder of our application. The 3rd point is explained below.  
-
 # API Manevent 
 
 Manevent is a simple application written on [Node.js](https://nodejs.org/) with the use of [Express.js](https://expressjs.com/) framework based on [Mongo DB](https://www.mongodb.com/) which allows the following set of interactions : 
@@ -97,4 +88,3 @@ const MsgSchema = new Schema({
 [express]: https://expressjs.com
 [mongo]: https://www.mongodb.com
 [node]: https://nodejs.org/
-
