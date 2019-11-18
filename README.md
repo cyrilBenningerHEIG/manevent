@@ -8,8 +8,8 @@ Manevent is a simple application written on [Node.js](https://nodejs.org/) with 
 
 ## Requirements
 
-* [Node.js][node] 12.x
-* [MongoDB][mongo] 4.x
+* [Node.js][https://nodejs.org/] 12.x
+* [MongoDB][https://www.mongodb.com/] 4.x
 
 ## Usage
 
