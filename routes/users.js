@@ -61,7 +61,7 @@ router.get('/:_id', function (req, res, next) {
         if (err) {
           return next(err);
         }
-        if(user.length===0)return res.send(Users);
+        if (user.length === 0) return res.send(Users);
         res.send(user);
       });
 
@@ -154,53 +154,58 @@ router.post('/', function (req, res, next) {
 router.patch('/:_id', auth, function (req, res, next) {
   if (checkID(req.params._id)) return res.status(404).send("This ID is not valid");
   const currentUserId = req.currentUserId;
-  if (!(req.body.password===undefined)) {
+  if (!(req.body.password === undefined)) {
     const plainPassword = req.body.password;
     const saltRounds = 10;
     bcrypt.hash(plainPassword, saltRounds, function (err, hashedPassword) {
       if (err) {
         return next(err);
       }
-      req.body.password=hashedPassword;
+      req.body.password = hashedPassword;
       User.findByIdAndUpdate(
         // the id of the item to find
         req.params._id,
-    
+
         // the change to be made. Mongoose will smartly combine your existing
         // document with this change, which allows for partial updates too
         req.body,
-    
+
         // the callback function
         (err, Users) => {
-          
+
           // Handle any possible database errors
           if (err) return res.status(500).send(err);
           if (checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
           if (Users._id != currentUserId) return res.status(503).send("You can't update this user");
-          return res.send(Users);
-        });        
+        });
     });
+
+  }
+  else {
+    User.findByIdAndUpdate(
+      // the id of the item to find
+      req.params._id,
+
+      // the change to be made. Mongoose will smartly combine your existing
+      // document with this change, which allows for partial updates too
+      req.body,
+
+      // the callback function
+      (err, Users) => {
+
+        // Handle any possible database errors
+        if (err) return res.status(500).send(err);
+        if (checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
+        if (Users._id != currentUserId) return res.status(503).send("You can't update this user");
+      });
+  }
+  Event.findById(req.params._id).exec(function (err, Users) {
+    if (err) {
+      return next(err);
+    }
     
-  }
-  else{
-  User.findByIdAndUpdate(
-    // the id of the item to find
-    req.params._id,
-
-    // the change to be made. Mongoose will smartly combine your existing
-    // document with this change, which allows for partial updates too
-    req.body,
-
-    // the callback function
-    (err, Users) => {
-
-      // Handle any possible database errors
-      if (err) return res.status(500).send(err);
-      if (checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
-      if (Users._id != currentUserId) return res.status(503).send("You can't update this user");
-      return res.send(Users);
-    });
-  }
+    res.send(Users);
+  });
 
 });
 
