@@ -35,25 +35,31 @@ describe('POST /users', function () {
   });
 });
 
-describe('GET /login', function () {
+describe('POST /login', function () {
 
-  // Create 2 people in the database before each test in this block.
-  beforeEach(async function () {
-    await Promise.all([
-      User.create({ name: 'Lucien', email: '666taime@heig-vd.ch', password: 'jesuisencoreunmome' }),
-      User.create({ name: 'Tiesto Testa', email: 'test2@heig-vd.ch', password: 'test2' })
-    ]);
-  });
+  // Create 1 user in the database before each test in this block.
+
+    let user;
+  
+    // Create 1 user in the database before each test in this block.
+    beforeEach(async function () {
+      user = await User.create({ name: 'Lucien', email: '666taime@heig-vd.ch', password: 'jesuisencoreunmome' })
+    });
 
   it('should login the user', async function () {
 
+    // const exp = (new Date().getTime() + 1 * 24 * 3600 * 1000) / 1000;
+    // const claims = { sub: user._id.toString(), exp: exp };
+
+    // // 2. Create the user's JWT
+    // let user_jwt = jwt.sign(claims, secretKey);      
+
     // Make a GET request on /manevent/users/login
     const res = await supertest(app)
-      .post('/users')
+      .post('/login')
       .send({
         "name": 'Lucien',
-        "email": "666taime@gmail.com",
-        "password": 'jesuisencoreunmome'
+        "password": user.password,
       })
       .expect(200)
       .expect('Content-Type', /json/);
