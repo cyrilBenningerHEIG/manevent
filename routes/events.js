@@ -311,7 +311,7 @@ router.patch('/:_id', auth,function (req, res, next) {
       if (checkEmpty(event)) return res.status(404).send("The event doesn't exist");
 
       if(event.admin!=currentUserId) return res.status(503).send("Only admin user can update");
-      return res.status(200).send("The event has been updated");
+      return res.status(200).send(event);
     });
 });
 

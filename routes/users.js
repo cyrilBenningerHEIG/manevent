@@ -61,6 +61,7 @@ router.get('/:_id', function (req, res, next) {
         if (err) {
           return next(err);
         }
+        if(user.length===0)return res.send(Users);
         res.send(user);
       });
 
@@ -151,7 +152,6 @@ router.post('/', function (req, res, next) {
 
 /* update User. */
 router.patch('/:_id', auth, function (req, res, next) {
-  console.log(req.body.password);
   if (checkID(req.params._id)) return res.status(404).send("This ID is not valid");
   const currentUserId = req.currentUserId;
   if (!(req.body.password===undefined)) {
@@ -178,8 +178,9 @@ router.patch('/:_id', auth, function (req, res, next) {
           if (checkEmpty(Users)) return res.status(404).send("The user doesn't exist");
           if (Users._id != currentUserId) return res.status(503).send("You can't update this user");
           return res.send(Users);
-        });
+        });        
     });
+    
   }
   else{
   User.findByIdAndUpdate(
