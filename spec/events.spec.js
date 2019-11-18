@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 const supertest = require('supertest');
 const app = require('../app');
+const auth = require("../middleware/auth");
 const Event = require('../models/event');
 const User = require('../models/user');
 const mongoose = require('mongoose');

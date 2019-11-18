@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 // Define the schema for users
 const userSchema = new Schema({
-  name:{
-    type:String,
-    require:true,
+  name: {
+    type: String,
+    require: true,
   },
   email: {
     type: String,
@@ -13,8 +13,12 @@ const userSchema = new Schema({
     unique: true,
     required: 'Email address is required',
     match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
-},
-  password: String 
+  },
+  password: {
+    type: String,
+    required: true,
+    min: 3
+  }
 });
 // Create the model from the schema and export it
 module.exports = mongoose.model('User', userSchema);
