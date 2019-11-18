@@ -241,6 +241,7 @@ router.get('/:_id', function (req, res, next) {
 *    "public": true,
 *    "__v": 0
 *}
+ * @apiUse ServerError
  */
 
 /* post a new event. */
