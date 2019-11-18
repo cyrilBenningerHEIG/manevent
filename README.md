@@ -25,7 +25,7 @@ If you are a developer and you have an intention to change the code you should r
 
 ## Documentation
 
-The documentation can be found in the `/docs` folder of our application. 
+The documentation can be found in the `/docs` folder of our application and the demo [here](https://manevent.herokuapp.com/).
 
 ## Real-time component 
 
